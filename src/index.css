@@ -1,3 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: 0deg 0% 100%;
+    --bg-secondary: 0deg 0% 96%;
+    --bg-secondary-hover: 0deg 0% 93%;
+    --text-normal: 0deg 0% 4%;
+    --text-muted: 0deg 0% 32%;
+    --text-faint: 0deg 0% 64%;
+    --border: 0deg 0% 85%;
+    --loading: 0deg 0% 45%;
+    --accent: 0deg 0% 10%;
+    --accent-hover: 0deg 0% 15%;
+  }
+
+  html.dark {
+    --bg-primary: 0deg 0% 12%;
+    --bg-secondary: 0deg 0% 16%;
+    --bg-secondary-hover: 0deg 0% 22%;
+    --text-normal: 0deg 0% 96%;
+    --text-muted: 0deg 0% 68%;
+    --text-faint: 0deg 0% 36%;
+    --border: 0deg 0% 32%;
+    --loading: 0deg 0% 35%;
+    --accent: 0deg 0% 100%;
+    --accent-hover: 0deg 0% 95%;
+  }  
+}
