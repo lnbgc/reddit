@@ -41,10 +41,10 @@
     @apply rounded-full w-7 h-7;
   }
   .success {
-    @apply text-green-500 text-sm;
+    @apply text-green-500 text-xs;
   }
   .error {
-    @apply text-red-500 text-sm;
+    @apply text-red-500 text-xs;
   }
   .headerless {
     @apply h-[calc(100vh-54px)];
