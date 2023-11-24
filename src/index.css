@@ -29,3 +29,35 @@
     --accent-hover: 0deg 0% 95%;
   }  
 }
+
+@layer components {
+  .icon-xs {
+    @apply w-4 h-4;
+  }
+  .icon-sm {
+    @apply w-5 h-5;
+  }
+}
+
+.modal {
+  opacity: 0;
+  visibility: hidden;
+  z-index: 99;
+}
+
+.modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal .placement {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.modal.active .placement {
+  opacity: 1;
+  visibility: visible;
+  display: flex;
+  flex-direction: column;
+}
