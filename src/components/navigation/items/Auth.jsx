@@ -2,7 +2,9 @@ import { Signin } from "@components/auth/Signin";
 import { Signup } from "@components/auth/Signup";
 import { Button } from "@components/ui/Button";
 import { Modal, ModalBody, ModalHeader } from "@components/ui/Modal";
+import { LOGIN } from "@routes/routes";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export const Auth = () => {
     const [showLoginModal, setShowLoginModal] = useState(false);
@@ -28,7 +30,7 @@ export const Auth = () => {
                     </ModalHeader>
                     <ModalBody>
                         <div className="flex flex-col gap-8 w-80">
-                            <Signin />
+                            <Signin closeModal={() => setShowLoginModal(false)} />
                             <span className="text-sm text-muted font-medium self-center">Don't have an account?
                                 <a
                                     onClick={() => {
@@ -49,7 +51,7 @@ export const Auth = () => {
                     </ModalHeader>
                     <ModalBody>
                         <div className="flex flex-col gap-8 w-80">
-                            <Signup />
+                            <Signup closeModal={() => setShowRegisterModal(false)} />
                             <span className="text-sm text-muted font-medium self-center">Already a Redditor?
                                 <a
                                     onClick={() => {
@@ -63,6 +65,14 @@ export const Auth = () => {
                         </div>
                     </ModalBody>
                 </Modal>
+            </div>
+
+            <div id="mobile-auth" className="flex items-center gap-2 md:hidden">
+                <Link to={LOGIN}>
+                    <Button type="primary">
+                        Log In
+                    </Button>
+                </Link>
             </div>
         </>
     )

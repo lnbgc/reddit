@@ -5,7 +5,7 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom"
 
-export const Google = () => {
+export const Google = ({ closeModal }) => {
 
     const navigate = useNavigate();
 
@@ -16,6 +16,9 @@ export const Google = () => {
             const userDoc = doc(db, "users", user.uid);
             const docSnap = await getDoc(userDoc);
             if (!docSnap.exists()) {
+                if (closeModal) {
+                    closeModal();
+                }
                 navigate(USERNAME);
             } else {
                 navigate(ROOT);
