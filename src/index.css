@@ -37,6 +37,18 @@
   .icon-sm {
     @apply w-5 h-5;
   }
+  .avatar {
+    @apply rounded-full w-7 h-7;
+  }
+  .success {
+    @apply text-green-500 text-sm;
+  }
+  .error {
+    @apply text-red-500 text-sm;
+  }
+  .headerless {
+    @apply h-[calc(100vh-54px)];
+  }
 }
 
 .modal {

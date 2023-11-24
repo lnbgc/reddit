@@ -44,33 +44,35 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
-    const fetchUserData = async (uid) => {
-        const userDoc = doc(db, "users", uid);
-        try {
-            const docSnap = await getDoc(userDoc);
-            if (docSnap.exists()) {
-                setUserData(docSnap.data());
-            }
-        } catch (error) {
-            console.error("Could not fetch user data:", error)
-        }
-    }
-
     const logOut = () => {
         return signOut(auth);
     }
 
     useEffect(() => {
+        const fetchUserData = async (uid) => {
+            const userDoc = doc(db, "users", uid);
+            try {
+                const docSnap = await getDoc(userDoc);
+                if (docSnap.exists()) {
+                    setUserData(docSnap.data());
+                }
+            } catch (error) {
+                console.error("Could not fetch user data:", error);
+            }
+        };
+    
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
             if (currentUser) {
-                fetchUserData(currentUser);
+                fetchUserData(currentUser.uid);
             } else {
                 setUserData(null);
             }
         });
+    
         return () => unsubscribe();
     }, []);
+    
 
     useEffect(() => {
         localStorage.setItem("user", JSON.stringify(user));
