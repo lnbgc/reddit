@@ -11,6 +11,7 @@ export default defineConfig({
       "@routes": "/src/routes",
       "@assets": "/src/assets",
       "@contexts": "/src/contexts",
+      "@utils": "/src/utils",
     }
   }
 })
