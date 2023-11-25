@@ -38,7 +38,10 @@
     @apply w-5 h-5;
   }
   .avatar {
-    @apply rounded-full w-7 h-7;
+    @apply w-7 h-7 object-cover rounded-full ;
+  }
+  .avatar-sm {
+    @apply w-5 h-5 object-cover rounded-full;
   }
   .success {
     @apply text-green-500 text-xs;
