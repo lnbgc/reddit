@@ -1,6 +1,7 @@
 import { Dropdown } from "@components/ui/Dropdown"
 import { useAuth } from "@contexts/AuthContext";
-import { Cog, FileText, HelpCircle, InfoIcon, LogOut, Plus, UserCircle2 } from "lucide-react"
+import { CREATECOMMUNITY } from "@routes/routes";
+import { Cog, FileText, InfoIcon, LogOut, Plus, UserCircle2 } from "lucide-react"
 import moment from "moment/moment";
 import { Link } from "react-router-dom"
 
@@ -36,16 +37,12 @@ export const ProfileMenu = ({ userData }) => {
           </Link>
         </ul>
         <ul className="flex flex-col py-2">
-          <Link>
+          <Link to={CREATECOMMUNITY} className="dropdown-link">
             <li className="flex items-center gap-2 py-2 pl-2 rounded-md hover:bg-secondary">
               <Plus className="icon-sm" />
               Create a community
             </li>
           </Link>
-          <li className="flex items-center gap-2 py-2 pl-2 rounded-md hover:bg-secondary">
-            <HelpCircle className="icon-sm" />
-            Help
-          </li>
           <li className="flex items-center gap-2 py-2 pl-2 rounded-md hover:bg-secondary">
             <InfoIcon className="icon-sm" />
             More
