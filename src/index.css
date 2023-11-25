@@ -37,11 +37,14 @@
   .icon-sm {
     @apply w-5 h-5;
   }
-  .avatar {
-    @apply w-7 h-7 object-cover rounded-full ;
-  }
   .avatar-sm {
     @apply w-5 h-5 object-cover rounded-full;
+  }
+  .avatar-md {
+    @apply w-7 h-7 object-cover rounded-full ;
+  }
+  .avatar-lg {
+    @apply w-10 h-10 object-cover rounded-full;
   }
   .success {
     @apply text-green-500 text-xs;
@@ -51,6 +54,9 @@
   }
   .headerless {
     @apply h-[calc(100vh-54px)];
+  }
+  .min-headerless {
+    @apply min-h-[calc(100vh-54px)];
   }
 }
 
