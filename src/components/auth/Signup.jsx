@@ -2,16 +2,18 @@ import { Button } from "@components/ui/Button"
 import { Input } from "@components/ui/Input"
 import { Google } from "./Google"
 import { useAuth } from "@contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "@utils/firebase";
-import { ROOT } from "@routes/routes";
+import { REGISTER, ROOT } from "@routes/routes";
 
 export const Signup = ({ closeModal }) => {
 
     const { usernameCheck, createUser } = useAuth();
+
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -57,7 +59,11 @@ export const Signup = ({ closeModal }) => {
             await createUser(user.uid, username, email);
             setSuccess("Successfully registered! Redirecting...");
             setError("");
-            navigate(ROOT);
+            if (location.pathname === REGISTER) {
+                navigate(-1);
+            } else {
+                window.location.reload();
+            }
         } catch (error) {
             if (error.code) {
                 switch (error.code) {

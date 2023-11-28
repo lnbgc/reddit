@@ -1,15 +1,16 @@
 import { Button } from "@components/ui/Button"
 import { Input } from "@components/ui/Input"
 import { Google } from "./Google"
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@utils/firebase";
-import { ROOT } from "@routes/routes";
+import { LOGIN } from "@routes/routes";
 
 export const Signin = ({ closeModal }) => {
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -25,7 +26,11 @@ export const Signin = ({ closeModal }) => {
             if (closeModal) {
                 closeModal();
             }
-            navigate(ROOT)
+            if (location.pathname === LOGIN) {
+                navigate(-1);
+            } else {
+                window.location.reload();
+            }
         } catch (error) {
             if (error.code) {
                 switch (error.code) {

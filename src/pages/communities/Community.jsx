@@ -38,7 +38,6 @@ export const Community = () => {
         }
     }
 
-
     useEffect(() => {
         fetchData();
     }, [communityURL]);
@@ -55,6 +54,8 @@ export const Community = () => {
 
     const isModerator = userData && communityData.moderators.includes(userData?.uid);
 
+    const isFollowing = userData?.following_communities.includes(communityData.id);
+    
     return (
         <div className="min-headerless">
             <div className="pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12 grid grid-cols-12 gap-6">
@@ -78,7 +79,7 @@ export const Community = () => {
                             </Link>
                         )}
                     </div>
-                    {userData && (
+                    {isFollowing && (
                         <div className="flex items-center gap-2 w-full border border-border rounded-md shadow-sm p-2">
                             <img src={userData.avatar} className="avatar-md" alt="" />
                             <input type="text" placeholder="Create post" className="text-sm font-medium outline-none bg-transparent placeholder:text-faint rounded-md w-full border border-border py-2 px-3" />
