@@ -5,6 +5,7 @@ import { Login } from "@pages/auth/Login";
 import { Register } from "@pages/auth/Register";
 import { CreateCommunity } from "@pages/communities/CreateCommunity";
 import { Community } from "@pages/communities/Community";
+import { EditCommunity } from "@pages/communities/edit/EditCommunity";
 
 export const ROOT = "/";
 export const LOGIN = "/login";
@@ -12,6 +13,7 @@ export const REGISTER = "/register";
 export const USERNAME = "/google-provider/requires/username";
 export const CREATECOMMUNITY = "/create";
 export const COMMUNITY = "/r/:communityURL";
+export const EDITCOMMUNITY = "/r/:communityURL/edit";
 
 export const Routes = () => {
     return (
@@ -22,6 +24,7 @@ export const Routes = () => {
             <Route path={USERNAME} element={<SetUsername />} />
             <Route path={CREATECOMMUNITY} element={<CreateCommunity />} />
             <Route path={COMMUNITY} element={<Community />} />
+            <Route path={EDITCOMMUNITY} element={<EditCommunity />} />
         </RouterRoutes>
     )
 }

@@ -1,5 +1,5 @@
 export const Button = ({ onClick, children, type, width }) => {
-    
+
     let classes = "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium shadow-sm px-4 py-2 select-none outline-none";
 
     if (width === "full") {
@@ -15,6 +15,10 @@ export const Button = ({ onClick, children, type, width }) => {
             break;
         case "loading":
             classes += " bg-loading text-white";
+            onClick = null;
+            break;
+        case "success":
+            classes += " bg-green-500 text-white";
             onClick = null;
             break;
         case "disabled":

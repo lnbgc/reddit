@@ -54,11 +54,10 @@ export const Community = () => {
     const isModerator = userData && communityData.moderators.includes(userData?.uid);
 
     return (
-        <div className="min-headerless max-w-6xl mx-auto">
-            <div className="pt-6 px-2 grid grid-cols-12 gap-6">
+        <div className="min-headerless">
+            <div className="pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12 grid grid-cols-12 gap-6">
                 <div className="col-span-full md:col-span-8 space-y-4">
                     <div className="flex justify-between">
-
                         <div className="flex items-center gap-3">
                             <img src={communityData.avatar} className="avatar-lg" />
                             <div className="flex items-center justify-between w-full">
@@ -129,7 +128,7 @@ export const Community = () => {
                             <span className="text-xs text-faint uppercase font-medium">Flairs</span>
                             <div className="flex flex-wrap gap-1">
                                 {communityData.flairs.map((flair) => (
-                                    <span key={flair.id} className="px-4 py-1.5 rounded-full text-white font-medium bg-loading">{flair}</span>
+                                    <span key={flair.id} className="flair">{flair}</span>
                                 ))}
                             </div>
                         </div>
@@ -137,7 +136,7 @@ export const Community = () => {
 
                     {communityData.rules && communityData.rules.length > 0 && (
                         <div className="border border-border rounded-md shadow-sm p-6 flex flex-col gap-3">
-                            <span className="text-xs text-faint uppercase font-medium">Flairs</span>
+                            <span className="text-xs text-faint uppercase font-medium">r/{communityData.url} rules</span>
                             <div className="flex flex-wrap gap-1">
                                 <Accordion counter={true} items={communityData.rules} />
                             </div>

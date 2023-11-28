@@ -6,7 +6,9 @@ export default function App() {
     <>
       <Navbar />
       <main className="bg-primary text-normal">
-        <Routes />
+        <div className="max-w-6xl mx-auto">
+          <Routes />
+        </div>
       </main>
     </>
   )

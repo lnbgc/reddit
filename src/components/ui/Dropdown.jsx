@@ -1,7 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import React, { useState, useRef, useEffect } from "react";
 
-export const Dropdown = ({ trigger, align, top, children }) => {
+export const Dropdown = ({ trigger, align, top, chevron = true, children }) => {
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef();
 
@@ -36,16 +36,18 @@ export const Dropdown = ({ trigger, align, top, children }) => {
         <div className="relative">
             <div className="trigger cursor-pointer flex items-center gap-2 font-medium shadow-sm text-sm border border-border rounded-md w-fit p-2" onClick={toggleDropdown}>
                 {trigger}
-                <ChevronDown className={`icon-sm text-faint transform transition-transform duration-300 ${open ? "rotate-180" : "rotate-0"}`} />
+                {chevron && (
+                    <ChevronDown className={`icon-sm text-faint transform transition-transform duration-300 ${open ? "rotate-180" : "rotate-0"}`} />
+                )}
             </div>
-                <div
-                    ref={dropdownRef}
-                    className={`absolute ${top} ${alignment} bg-primary shadow-sm border border-border transition-all duration-300 rounded-md p-3 select-none max-w-xs ${open ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-3 scale-95"}`}
-                >
-                    <div className={`flex flex-col font-medium text-sm ${!open && "pointer-events-none"}`}>
-                        {children}
-                    </div>
+            <div
+                ref={dropdownRef}
+                className={`absolute ${top} ${alignment} bg-primary shadow-sm border border-border transition-all duration-300 rounded-md p-3 select-none max-w-xs ${open ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-3 scale-95 pointer-events-none"}`}
+            >
+                <div className="flex flex-col font-medium text-sm">
+                    {children}
                 </div>
+            </div>
         </div>
     );
 };
