@@ -1,3 +1,5 @@
+import { Favorite } from "@components/communities/Favorite";
+import { Join } from "@components/communities/Join";
 import { Accordion } from "@components/ui/Accordion";
 import { Button } from "@components/ui/Button";
 import { useAuth } from "@contexts/AuthContext";
@@ -114,12 +116,8 @@ export const Community = () => {
                             </p>
                         </div>
                         <div className="flex flex-col gap-2">
-                            <Button type="primary">
-                                Join
-                            </Button>
-                            <Button type="secondary">
-                                Add to Favorites
-                            </Button>
+                            <Join communityID={communityData.id} />
+                            <Favorite communityID={communityData.id} />
                         </div>
                     </div>
 
