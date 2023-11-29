@@ -6,6 +6,7 @@ import { Textarea } from "@components/ui/Textarea";
 import { Button } from "@components/ui/Button";
 import { CheckCircle, Loader2, Pen } from "lucide-react";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { FileInput } from "@components/ui/FileInput";
 
 export const GeneralTab = ({ communityData }) => {
 
@@ -21,7 +22,7 @@ export const GeneralTab = ({ communityData }) => {
 
   const [avatar, setAvatar] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
-  
+
   useEffect(() => {
     setName(communityData.name || "");
     setDescription(communityData.description || "");
@@ -31,7 +32,7 @@ export const GeneralTab = ({ communityData }) => {
     const newName = e.target.value;
     setName(newName);
     setNameCounter(50 - newName.length);
-}
+  }
 
   const updateDescription = (value) => {
     setDescription(value);
@@ -90,13 +91,11 @@ export const GeneralTab = ({ communityData }) => {
             <img src={communityData.avatar} className="w-10 h-10 object-cover rounded-full" />
 
           )}
-          <div className="font-medium text-sm flex items-center gap-2 border border-border rounded-md shadow-sm p-2">
-            <Pen className="icon-xs" />
-            <label className="cursor-pointer">
-              <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-              Edit Avatar
-            </label>
-          </div>
+          <FileInput
+            label="Edit Avatar"
+            icon={<Pen className="icon-xs" />}
+            onChange={handleFileChange}
+          />
         </div>
         <Input
           type="text"

@@ -3,6 +3,7 @@ import { Join } from "@components/communities/Join";
 import { Accordion } from "@components/ui/Accordion";
 import { Button } from "@components/ui/Button";
 import { useAuth } from "@contexts/AuthContext";
+import { CREATEPOST } from "@routes/routes";
 import { db } from "@utils/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { Cake, Cog, Image, Loader2 } from "lucide-react";
@@ -80,13 +81,13 @@ export const Community = () => {
                         )}
                     </div>
                     {isFollowing && (
-                        <div className="flex items-center gap-2 w-full border border-border rounded-md shadow-sm p-2">
+                        <Link Link to={CREATEPOST} state={{ communityData }} className="flex items-center gap-2 w-full border border-border rounded-md shadow-sm p-2">
                             <img src={userData.avatar} className="avatar-md" alt="" />
                             <input type="text" placeholder="Create post" className="text-sm font-medium outline-none bg-transparent placeholder:text-faint rounded-md w-full border border-border py-2 px-3" />
                             <Button>
                                 <Image className="icon-sm text-muted" />
                             </Button>
-                        </div>
+                        </Link>
                     )}
 
                     <div>
