@@ -21,6 +21,9 @@ export const Button = ({ onClick, children, type, width }) => {
             classes += " bg-green-500 text-white";
             onClick = null;
             break;
+        case "danger":
+            classes += " border border-red-500 text-red-500 hover:bg-red-500/10";
+            break;
         case "disabled":
             classes += " bg-secondary text-faint cursor-not-allowed";
             onClick = null;
