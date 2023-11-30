@@ -6,8 +6,8 @@ import { Register } from "@pages/auth/Register";
 import { CreateCommunity } from "@pages/communities/CreateCommunity";
 import { Community } from "@pages/communities/Community";
 import { EditCommunity } from "@pages/communities/edit/EditCommunity";
-import { CreatePost } from "@pages/CreatePost";
-import { FullPost } from "@pages/FullPost";
+import { CreatePost } from "@pages/posts/CreatePost";
+import { FullPost } from "@pages/posts/FullPost";
 
 export const ROOT = "/";
 export const LOGIN = "/login";

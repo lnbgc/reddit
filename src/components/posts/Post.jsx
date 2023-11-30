@@ -196,7 +196,7 @@ export const Post = ({ post, type }) => {
                 <div className="flex flex-col gap-4">
                     <PreviewInfo />
                     <div className="flex flex-wrap items-center gap-2">
-                        <h1 className="text-2xl font-bold" >
+                        <h1 className="text-xl font-bold" >
                             {post.flair && (
                                 <span className="text-sm font-medium bg-loading text-white rounded-full px-3.5 py-1 mr-2">{post.flair}</span>
                             )}

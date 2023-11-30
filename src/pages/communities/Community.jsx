@@ -6,7 +6,7 @@ import { Button } from "@components/ui/Button";
 import { useAuth } from "@contexts/AuthContext";
 import { CREATEPOST } from "@routes/routes";
 import { db } from "@utils/firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import { Cake, Cog, Image, Loader2 } from "lucide-react";
 import moment from "moment/moment";
 import { useEffect, useState } from "react";
@@ -19,6 +19,7 @@ export const Community = () => {
 
     const [communityData, setCommunityData] = useState(null);
     const [posts, setPosts] = useState([]);
+    const [moderators, setModerators] = useState([]);
 
     const fetchData = async () => {
         try {
@@ -52,9 +53,30 @@ export const Community = () => {
         }
     };
 
+    const fetchModerators = async () => {
+        try {
+            const moderatorsData = [];
+            for (const moderatorID of communityData.moderators) {
+                const userDoc = await getDoc(doc(db, "users", moderatorID));
+                if (userDoc.exists()) {
+                    moderatorsData.push(userDoc.data());
+                } else {
+                    console.error(error);
+                    continue;
+                }
+            }
+            setModerators(moderatorsData);
+        } catch (error) {
+            console.error("Could not fetch moderators:", error);
+        }
+    };
+    
     useEffect(() => {
         fetchData();
         fetchPosts();
+        if (communityData) {
+            fetchModerators();
+        }
     }, [communityURL, communityData]);
 
     if (communityData == null) {
@@ -162,6 +184,19 @@ export const Community = () => {
                             </div>
                         </div>
                     )}
+
+                    <div className="border border-border rounded-md shadow-sm p-6 flex flex-col gap-3">
+                        <span className="text-xs text-faint uppercase font-medium">Moderators</span>
+                        <ul className="flex flex-col gap-2 font-medium underline underline-offset-2">
+                            {moderators.map((moderator, index) => (
+                                <li key={index}>
+                                    <Link to={`/u/${moderator.username}`}>
+                                        u/{moderator.username}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
             </div >
         </div>
