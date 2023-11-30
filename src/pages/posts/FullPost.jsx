@@ -1,3 +1,4 @@
+import { CreateComment } from "@components/comments/CreateComment";
 import { Favorite } from "@components/communities/Favorite";
 import { Join } from "@components/communities/Join";
 import { Post } from "@components/posts/Post";
@@ -94,8 +95,9 @@ export const FullPost = () => {
     const followersCount = communityData.followers.length;
     return (
         <div className="min-headerless pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12 grid grid-cols-12 gap-6">
-            <div className="col-span-full md:col-span-8">
+            <div className="col-span-full md:col-span-8 flex flex-col gap-8">
                 <Post post={post} type="full" />
+                <CreateComment postID={postID} />
             </div>
             <div className="col-span-4 hidden text-sm md:flex flex-col gap-3">
                 <div className="border border-border rounded-md shadow-sm p-6 flex flex-col gap-3">
