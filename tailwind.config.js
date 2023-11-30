@@ -23,6 +23,9 @@ export default {
         accent: "hsl(var(--accent) / <alpha-value>)",
         accentHover: "hsl(var(--accent-hover) / <alpha-value>)",
       },
+      borderWidth: {
+        '1.5': '1.5px',
+      },
     },
   },
   plugins: [],

@@ -1,3 +1,4 @@
+import { Comment } from "@components/comments/Comment";
 import { CreateComment } from "@components/comments/CreateComment";
 import { Favorite } from "@components/communities/Favorite";
 import { Join } from "@components/communities/Join";
@@ -15,6 +16,8 @@ export const FullPost = () => {
     const [post, setPost] = useState(null);
     const [communityData, setCommunityData] = useState(null);
     const [moderators, setModerators] = useState([]);
+    const [comments, setComments] = useState([]);
+
     const fetchCommunity = async () => {
         try {
             const q = query(collection(db, "communities"), where("url", "==", communityURL));
@@ -48,7 +51,7 @@ export const FullPost = () => {
         }
     };
 
-    
+
     const fetchModerators = async () => {
         try {
             const moderatorsData = [];
@@ -67,11 +70,25 @@ export const FullPost = () => {
         }
     };
 
+    const fetchComments = async () => {
+        try {
+            const q = query(collection(db, "comments"), where("post_id", "==", postID))
+            const querySnapshot = await getDocs(q);
+            const commentsData = querySnapshot.docs.map(doc => doc.data());
+            setComments(commentsData);
+        } catch (error) {
+            console.error("Could not fetch comments:", error);
+        }
+    };
+
     useEffect(() => {
         fetchCommunity();
         fetchPost();
         if (communityData) {
             fetchModerators();
+        }
+        if (postID) {
+            fetchComments();
         }
     }, [postID, communityURL, communityData]);
 
@@ -98,6 +115,12 @@ export const FullPost = () => {
             <div className="col-span-full md:col-span-8 flex flex-col gap-8">
                 <Post post={post} type="full" />
                 <CreateComment postID={postID} />
+                <div className="flex flex-col gap-4">
+                    {comments.map(comment => (
+                        <Comment key={comment.id} comment={comment} postID={postID} postAuthor={post.createdBy} />
+                    ))}
+                </div>
+
             </div>
             <div className="col-span-4 hidden text-sm md:flex flex-col gap-3">
                 <div className="border border-border rounded-md shadow-sm p-6 flex flex-col gap-3">
