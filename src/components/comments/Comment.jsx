@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { db } from "@utils/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import moment from "moment";
-import { MessageCircle } from "lucide-react";
+import { CreateReply } from "./CreateReply";
 
-export const Comment = ({ comment, postAuthor }) => {
+export const Comment = ({ comment, postAuthor, postID }) => {
     const [creatorData, setCreatorData] = useState(null);
 
     const fetchCommentData = async () => {
@@ -45,6 +45,7 @@ export const Comment = ({ comment, postAuthor }) => {
                         <p className="text-sm">
                             {comment.content}
                         </p>
+                        <CreateReply commentID={comment.id} postID={postID} />
                     </div>
                 </>
             )}
