@@ -171,29 +171,30 @@ export const CreatePost = () => {
                 align="left"
                 top="top-10"
               >
-
-                {communityData.flairs.length > 0 ? (
-                  <ul className="w-60">
-                    {communityData.flairs.map((flair, index) => (
-                      <li
-                        key={index}
-                        className="flex items-center gap-2 py-1"
-                        onClick={() => selectFlair(flair)}
-                      >
-                        <input
-                          type="radio"
-                          id={`flair-${index}`}
-                          name="flair"
-                          value={flair}
-                          onChange={() => selectFlair(flair)}
-                        />
-                        <label htmlFor={`flair-${index}`}>{flair}</label>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No flairs available for this community.</p>
-                )}
+                <div className="w-60">
+                  {communityData.flairs.length > 0 ? (
+                    <ul>
+                      {communityData.flairs.map((flair, index) => (
+                        <li
+                          key={index}
+                          className="flex items-center gap-2 py-1"
+                          onClick={() => selectFlair(flair)}
+                        >
+                          <input
+                            type="radio"
+                            id={`flair-${index}`}
+                            name="flair"
+                            value={flair}
+                            onChange={() => selectFlair(flair)}
+                          />
+                          <label htmlFor={`flair-${index}`}>{flair}</label>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No flairs available for this community.</p>
+                  )}
+                </div>
               </Dropdown>
               <div className="space-x-2">
                 <Button type="secondary" onClick={() => navigate(-1)}>Cancel</Button>

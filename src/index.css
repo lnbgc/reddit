@@ -59,7 +59,7 @@
     @apply min-h-[calc(100vh-54px)];
   }
   .flair {
-    @apply px-4 py-1.5 rounded-full text-white font-medium text-sm bg-loading;
+    @apply px-4 py-1.5 rounded-full text-white dark:text-primary font-medium text-sm bg-accent;
   }
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium shadow-sm px-4 py-2 select-none outline-none border border-border text-normal hover:bg-secondary cursor-pointer
@@ -87,4 +87,11 @@
   visibility: visible;
   display: flex;
   flex-direction: column;
+}
+
+.truncate-lines {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }

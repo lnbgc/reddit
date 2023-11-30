@@ -1,5 +1,6 @@
 import { Favorite } from "@components/communities/Favorite";
 import { Join } from "@components/communities/Join";
+import { Post } from "@components/posts/Post";
 import { Accordion } from "@components/ui/Accordion";
 import { Button } from "@components/ui/Button";
 import { useAuth } from "@contexts/AuthContext";
@@ -17,6 +18,7 @@ export const Community = () => {
     const { communityURL } = useParams();
 
     const [communityData, setCommunityData] = useState(null);
+    const [posts, setPosts] = useState([]);
 
     const fetchData = async () => {
         try {
@@ -39,9 +41,21 @@ export const Community = () => {
         }
     }
 
+    const fetchPosts = async () => {
+        try {
+            const q = query(collection(db, "posts"), where("community", "==", communityData.id))
+            const querySnapshot = await getDocs(q);
+            const postsData = querySnapshot.docs.map(doc => doc.data());
+            setPosts(postsData);
+        } catch (error) {
+            console.error("Could not fetch posts:", error);
+        }
+    };
+
     useEffect(() => {
         fetchData();
-    }, [communityURL]);
+        fetchPosts();
+    }, [communityURL, communityData]);
 
     if (communityData == null) {
         return (
@@ -56,11 +70,11 @@ export const Community = () => {
     const isModerator = userData && communityData.moderators.includes(userData?.uid);
 
     const isFollowing = userData?.following_communities.includes(communityData.id);
-    
+
     return (
         <div className="min-headerless">
             <div className="pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12 grid grid-cols-12 gap-6">
-                <div className="col-span-full md:col-span-8 space-y-4">
+                <div className="col-span-full md:col-span-8">
                     <div className="flex justify-between">
                         <div className="flex items-center gap-3">
                             <img src={communityData.avatar} className="avatar-lg" />
@@ -80,18 +94,24 @@ export const Community = () => {
                             </Link>
                         )}
                     </div>
-                    {isFollowing && (
-                        <Link Link to={CREATEPOST} state={{ communityData }} className="flex items-center gap-2 w-full border border-border rounded-md shadow-sm p-2">
+                    {isFollowing ? (
+                        <Link Link to={CREATEPOST} state={{ communityData }} className="mt-4 flex items-center gap-2 w-full border border-border rounded-md shadow-sm p-2">
                             <img src={userData.avatar} className="avatar-md" alt="" />
                             <input type="text" placeholder="Create post" className="text-sm font-medium outline-none bg-transparent placeholder:text-faint rounded-md w-full border border-border py-2 px-3" />
                             <Button>
                                 <Image className="icon-sm text-muted" />
                             </Button>
                         </Link>
+                    ) : (
+                        <div className="mt-4 text-sm font-medium border border-border rounded-md shadow-sm p-4">
+                            Join r/{communityData.url} to start posting.
+                        </div>
                     )}
 
-                    <div>
-                        posts
+                    <div className="divide-y divide-border">
+                        {posts.map(post => (
+                            <Post type="preview" key={post.id} post={post} />
+                        ))}
                     </div>
                 </div>
                 <div className="col-span-4 hidden text-sm md:flex flex-col gap-3">
