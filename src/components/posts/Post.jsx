@@ -3,7 +3,7 @@ import { Modal, ModalBody, ModalHeader } from "@components/ui/Modal";
 import { useAuth } from "@contexts/AuthContext";
 import { db } from "@utils/firebase";
 import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
-import { MessageCircle, Share2, Shield, ShieldEllipsis, Trash } from "lucide-react";
+import { MessageCircle, Share2, Trash } from "lucide-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -84,28 +84,43 @@ export const Post = ({ post, type }) => {
 
     const PreviewInfo = () => {
         return (
-            <div className="flex items-center justify-between text-sm w-full">
-                <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-2">
-                        <img src={communityData?.avatar} alt="" className="avatar-md" />
-                        <Link to={`/r/${communityData?.url}`} className="bg-secondary px-2 py-1 rounded-md font-semibold hover:bg-secondaryHover">r/{communityData?.url}</Link>
-                    </div>
-                    <div className="flex gap-1 text-xs text-muted">
-                        <span className="hidden md:block">posted by</span>
-                        {communityData && communityData.moderators.includes(post.createdBy) ? (
-                            <span className="select-none">MODERATORS</span>
-                        ) : (
-                            <Link to={`/u/${creatorData?.username}`} className="underline underline-offset-4">u/{creatorData ? creatorData.username : "deleted-user"}</Link>
-                        )}
-                    </div>
-                </div>
-                <div className="items-center gap-2 flex">
-                    <span className="w-2 h-2 bg-loading block rounded-full" />
-                    <span className="text-muted">{moment(post.createdAt.toDate()).fromNow()}</span>
-                </div>
+          <div className="flex items-center justify-between text-sm w-full">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2">
+                <img src={communityData?.avatar} alt="" className="avatar-md" />
+                <Link
+                  to={`/r/${communityData?.url}`}
+                  className="bg-secondary px-2 py-1 rounded-md font-semibold hover:bg-secondaryHover"
+                >
+                  r/{communityData?.url}
+                </Link>
+              </div>
+              <div className="flex gap-1 text-xs text-muted">
+                <span className="hidden md:block">posted by</span>
+                {communityData && communityData.moderators.includes(post.createdBy) ? (
+                  <span className="select-none">MODERATORS</span>
+                ) : (
+                  <Link
+                    to={`/u/${creatorData?.username}`}
+                    className="underline underline-offset-4"
+                  >
+                    u/{creatorData ? creatorData.username : "deleted-user"}
+                  </Link>
+                )}
+              </div>
             </div>
-        )
-    }
+            <div className="items-center gap-2 flex">
+              <span className="w-2 h-2 bg-loading block rounded-full" />
+              <span className="text-muted">
+                {post.createdAt && post.createdAt.toDate
+                  ? moment(post.createdAt.toDate()).fromNow()
+                  : ""}
+              </span>
+            </div>
+          </div>
+        );
+      };
+      
 
     const PreviewMore = () => {
         return (

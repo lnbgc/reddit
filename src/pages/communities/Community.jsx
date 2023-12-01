@@ -21,63 +21,78 @@ export const Community = () => {
     const [posts, setPosts] = useState([]);
     const [moderators, setModerators] = useState([]);
 
-    const fetchData = async () => {
-        try {
-            const q = query(collection(db, "communities"), where("url", "==", communityURL));
-            const querySnapshot = await getDocs(q);
-
-            if (querySnapshot.empty) {
-                console.error("Community not found");
-                // navigate to 404 page
-                return;
-            }
-
-            const communityDoc = querySnapshot.docs[0];
-            const communityData = communityDoc?.data();
-            setCommunityData(communityData);
-
-        } catch (error) {
-            console.error("Could not fetch community data:", error);
-            // navigate to 404 page
-        }
-    }
-
-    const fetchPosts = async () => {
-        try {
-            const q = query(collection(db, "posts"), where("community", "==", communityData.id))
-            const querySnapshot = await getDocs(q);
-            const postsData = querySnapshot.docs.map(doc => doc.data());
-            setPosts(postsData);
-        } catch (error) {
-            console.error("Could not fetch posts:", error);
-        }
-    };
-
-    const fetchModerators = async () => {
-        try {
-            const moderatorsData = [];
-            for (const moderatorID of communityData.moderators) {
-                const userDoc = await getDoc(doc(db, "users", moderatorID));
-                if (userDoc.exists()) {
-                    moderatorsData.push(userDoc.data());
-                } else {
-                    console.error(error);
-                    continue;
-                }
-            }
-            setModerators(moderatorsData);
-        } catch (error) {
-            console.error("Could not fetch moderators:", error);
-        }
-    };
-    
     useEffect(() => {
-        fetchData();
+        const fetchCommunity = async () => {
+            try {
+                const q = query(collection(db, "communities"), where("url", "==", communityURL));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    console.error("Community not found");
+                    // navigate to 404 page
+                    return;
+                }
+
+                const communityDoc = querySnapshot.docs[0];
+                const communityData = communityDoc?.data();
+                setCommunityData(communityData);
+
+                localStorage.setItem("communityData", JSON.stringify(communityData));
+            } catch (error) {
+                console.error("Could not fetch community data:", error);
+                // navigate to 404 page
+            }
+        };
+        fetchCommunity();
+    }, [communityURL]);
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                if (communityData) {
+                    const q = query(collection(db, "posts"), where("community", "==", communityData.id))
+                    const querySnapshot = await getDocs(q);
+                    const postsData = querySnapshot.docs.map(doc => doc.data());
+                    setPosts(postsData);
+
+                    localStorage.setItem("communityPosts", JSON.stringify(postsData));
+                }
+            } catch (error) {
+                console.error("Could not fetch posts:", error);
+            }
+        };
+
         fetchPosts();
-        if (communityData) {
-            fetchModerators();
-        }
-    }, [communityURL, communityData]);
+    }, [communityData]);
+
+    useEffect(() => {
+        const fetchModerators = async () => {
+            try {
+                if (communityData) {
+                    const moderatorsData = [];
+                    for (const moderatorID of communityData.moderators) {
+                        const userDoc = await getDoc(doc(db, "users", moderatorID));
+                        if (userDoc.exists()) {
+                            moderatorsData.push(userDoc.data());
+                        } else {
+                            console.error(error);
+                            continue;
+                        }
+                    }
+                    setModerators(moderatorsData);
+
+                    localStorage.setItem("communityModerators", JSON.stringify(moderatorsData));
+                }
+            } catch (error) {
+                console.error("Could not fetch moderators:", error);
+            }
+        };
+
+        fetchModerators();
+    }, [communityData]);
+
+
+
 
     if (communityData == null) {
         return (
@@ -143,10 +158,14 @@ export const Community = () => {
                             <p>{communityData.description}</p>
                         )}
 
-                        <div className="border-y border-border py-4 flex items-center font-medium gap-2">
-                            <Cake className="icon-sm" />
-                            <p>Created {moment(communityData.createdAt.toDate()).format('MMM D, YYYY')}.</p>
-                        </div>
+                        {communityData.createdAt && communityData.createdAt.toDate && (
+                            <div className="border-y border-border py-4 flex items-center font-medium gap-2">
+                                <Cake className="icon-sm" />
+                                <p>Created {moment(communityData.createdAt.toDate()).format('MMM D, YYYY')}.</p>
+                            </div>
+                        )}
+
+
                         <div className="flex justify-between items-center font-medium">
                             <span className="">
                                 Followers:
