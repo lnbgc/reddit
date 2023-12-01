@@ -18,95 +18,91 @@ export const FullPost = () => {
     const [moderators, setModerators] = useState([]);
     const [comments, setComments] = useState([]);
 
-    const fetchCommunity = async () => {
-        try {
-            const q = query(collection(db, "communities"), where("url", "==", communityURL));
-            const querySnapshot = await getDocs(q);
+    useEffect(() => {
+        const fetchCommunity = async () => {
+            try {
+                const q = query(collection(db, "communities"), where("url", "==", communityURL));
+                const querySnapshot = await getDocs(q);
 
-            if (querySnapshot.empty) {
-                console.error("Community not found");
-                // navigate to 404 page
-                return;
-            }
-
-            const communityDoc = querySnapshot.docs[0];
-            const communityData = communityDoc?.data();
-            setCommunityData(communityData);
-
-        } catch (error) {
-            console.error("Could not fetch community data:", error);
-            // navigate to 404 page
-        }
-    }
-    const fetchPost = async () => {
-        try {
-            const postDoc = await getDoc(doc(db, "posts", postID));
-            if (postDoc.exists()) {
-                setPost(postDoc.data());
-            } else {
-                console.error("Post not found");
-            }
-        } catch (error) {
-            console.error("Could not fetch post data:", error);
-        }
-    };
-
-
-    const fetchModerators = async () => {
-        try {
-            const moderatorsData = [];
-            for (const moderatorID of communityData.moderators) {
-                const userDoc = await getDoc(doc(db, "users", moderatorID));
-                if (userDoc.exists()) {
-                    moderatorsData.push(userDoc.data());
-                } else {
-                    console.error(error);
-                    continue;
+                if (querySnapshot.empty) {
+                    console.error("Community not found");
+                    // navigate to 404 page
+                    return;
                 }
-            }
-            setModerators(moderatorsData);
-        } catch (error) {
-            console.error("Could not fetch moderators:", error);
-        }
-    };
 
-    const fetchComments = async () => {
-        try {
-            const q = query(collection(db, "comments"), where("post_id", "==", postID))
-            const querySnapshot = await getDocs(q);
-            const commentsData = querySnapshot.docs.map(doc => doc.data());
-            setComments(commentsData);
-        } catch (error) {
-            console.error("Could not fetch comments:", error);
+                const communityDoc = querySnapshot.docs[0];
+                const communityData = communityDoc?.data();
+                setCommunityData(communityData);
+            } catch (error) {
+                console.error("Could not fetch community data:", error);
+                // navigate to 404 page
+            }
+        };
+        if (communityURL) {
+            fetchCommunity();
         }
-    };
+    }, [communityURL]);
 
     useEffect(() => {
-        fetchCommunity();
-        fetchPost();
-        if (communityData) {
+        const fetchPost = async () => {
+            try {
+                const postDoc = await getDoc(doc(db, "posts", postID));
+                if (postDoc.exists()) {
+                    setPost(postDoc.data());
+                } else {
+                    console.error("Post not found");
+                }
+            } catch (error) {
+                console.error("Could not fetch post data:", error);
+            }
+        };
+
+        const fetchModerators = async () => {
+            try {
+                const moderatorsData = [];
+                for (const moderatorID of communityData?.moderators || []) {
+                    const userDoc = await getDoc(doc(db, "users", moderatorID));
+                    if (userDoc.exists()) {
+                        moderatorsData.push(userDoc.data());
+                    } else {
+                        console.error("Moderator not found:", moderatorID);
+                        continue;
+                    }
+                }
+                setModerators(moderatorsData);
+            } catch (error) {
+                console.error("Could not fetch moderators:", error);
+            }
+        };
+        if (postID && communityData) {
+            fetchPost();
             fetchModerators();
         }
+    }, [postID, communityData]);
+
+    useEffect(() => {
+        const fetchComments = async () => {
+            try {
+                const q = query(collection(db, "comments"), where("post_id", "==", postID));
+                const querySnapshot = await getDocs(q);
+                const commentsData = querySnapshot.docs.map(doc => doc.data());
+                setComments(commentsData);
+            } catch (error) {
+                console.error("Could not fetch comments:", error);
+            }
+        };
         if (postID) {
             fetchComments();
         }
-    }, [postID, communityURL, communityData]);
+    }, [postID]);
 
 
-    if (!post) {
+    if (!post || !communityData) {
         return (
             <div className="flex items-center justify-center headerless w-full">
                 <Loader2 className="animate-spin h-10 w-10" />
             </div>
         )
-    }
-
-    if (!communityData) {
-        return (
-            <div className="flex items-center justify-center headerless w-full">
-                <Loader2 className="animate-spin h-10 w-10" />
-            </div>
-        );
     }
 
     const followersCount = communityData.followers.length;
