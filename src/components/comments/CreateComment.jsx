@@ -49,14 +49,16 @@ export const CreateComment = ({ postID }) => {
         setContent(value);
     };
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
             <Textarea
                 placeholder="What are your thoughts?"
                 value={content}
                 onChange={handleContent}
             />
-            <div className="self-end">
-                <Button onClick={handleSubmit} type="primary">Comment</Button>
+            <div className="bg-secondary p-2 rounded-lg">
+                <div className="flex justify-end w-full">
+                    <Button onClick={handleSubmit} type="primary">Comment</Button>
+                </div>
             </div>
         </div>
     )

@@ -1,5 +1,6 @@
 import { Button } from "@components/ui/Button";
 import { Modal, ModalBody, ModalHeader } from "@components/ui/Modal";
+import { Vote } from "@components/votes/Vote";
 import { useAuth } from "@contexts/AuthContext";
 import { db } from "@utils/firebase";
 import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
@@ -109,8 +110,9 @@ export const Post = ({ post, type }) => {
 
     const PreviewMore = () => {
         return (
-            <div className="flex justify-between text-muted">
+            <div className="flex justify-between text-muted font-medium">
                 <div className="flex gap-4">
+                    <Vote type="post" id={post.id} upvotes={post.upvotes} downvotes={post.downvotes} />
                     <div className="flex text-sm items-center gap-1">
                         <MessageCircle className="icon-sm" />
                         <p>{post.comments.length} </p>
@@ -120,7 +122,6 @@ export const Post = ({ post, type }) => {
                         <Share2 className="icon-sm" />
                         <span className="hidden md:block">Share</span>
                     </div>
-
                 </div>
                 {isModerator || userData?.uid === post.createdBy ? (
                     <Trash className="icon-xs cursor-pointer" onClick={() => setShowModal(true)} />

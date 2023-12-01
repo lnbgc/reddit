@@ -6,11 +6,18 @@ import { addDoc, arrayUnion, collection, doc, serverTimestamp, updateDoc } from 
 import { MessageCircle } from "lucide-react"
 import { useState } from "react"
 
-export const CreateReply = ({ postID, commentID }) => {
+export const ReplyButton = ({ setShow }) => {
+    return (
+        <div className=" flex font-medium text-sm items-center gap-1 cursor-pointer w-fit select-none" onClick={() => setShow((show) => !show)}>
+            <MessageCircle className="icon-sm" />
+            Reply
+        </div>
+    )
+}
 
+export const ReplyForm = ({ commentID, postID, show, setShow }) => {
     const { userData } = useAuth();
     const [content, setContent] = useState("");
-    const [show, setShow] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -52,29 +59,17 @@ export const CreateReply = ({ postID, commentID }) => {
         setContent(value);
     };
 
-    const showReply = () => {
-        setShow(!show);
-    };
-
     return (
-        <div>
-            <div className="flex font-medium text-sm items-center gap-1 cursor-pointer bg-secondary w-fit p-2 rounded-md select-none" onClick={showReply}>
-                <MessageCircle className="icon-sm" />
-                Reply
+        <div className={`flex flex-col gap-2 ${show ? "" : "hidden"}`}>
+            <Textarea
+                value={content}
+                onChange={handleContent}
+                placeholder="What are your thoughts?"
+            />
+            <div className="space-x-2">
+                <Button type="secondary" onClick={() => setShow(false)}>Cancel</Button>
+                <Button type="primary" onClick={handleSubmit}>Reply</Button>
             </div>
-            {show && (
-                <div className="mt-3 flex flex-col gap-2">
-                    <Textarea
-                        value={content}
-                        onChange={handleContent}
-                        placeholder="What are your thoughts?"
-                    />
-                    <div className="space-x-2">
-                        <Button type="secondary" onClick={showReply}>Cancel</Button>
-                        <Button type="primary" onClick={handleSubmit}>Reply</Button>
-                    </div>
-                </div>
-            )}
         </div>
     )
 }

@@ -1,12 +1,14 @@
+import { Vote } from "@components/votes/Vote";
 import { db } from "@utils/firebase";
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { CreateReply } from "./CreateReply";
+import { ReplyButton, ReplyForm } from "./CreateReply";
 
 export const Reply = ({ reply, postID, postAuthor }) => {
     const [creatorData, setCreatorData] = useState(null);
     const [replies, setReplies] = useState([]);
-
+    const [show, setShow] = useState(false);
+    
     const fetchReplyData = async () => {
         try {
             const userDoc = await getDoc(doc(db, "users", reply.createdBy));
@@ -57,7 +59,16 @@ export const Reply = ({ reply, postID, postAuthor }) => {
                         <p className="text-sm">
                             {reply.content}
                         </p>
-                        <CreateReply commentID={reply.id} postID={postID} />
+                        <div className="flex items-center gap-4">
+                            <Vote type="reply" id={reply.id} upvotes={reply.upvotes} downvotes={reply.downvotes} />
+                            <ReplyButton setShow={setShow} />
+                        </div>
+                        <ReplyForm
+                            commentID={reply.id}
+                            postID={postID}
+                            show={show}
+                            setShow={setShow}
+                        />
                         {replies.map((reply) => (
                             <Reply key={reply.id} reply={reply} postID={postID} postAuthor={postAuthor} />
                         ))}
