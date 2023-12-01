@@ -37,7 +37,6 @@ export const Community = () => {
                 const communityData = communityDoc?.data();
                 setCommunityData(communityData);
 
-                console.log("Fetched community data. Firestore reads:", querySnapshot.size);
             } catch (error) {
                 console.error("Could not fetch community data:", error);
                 // navigate to 404 page
@@ -57,8 +56,6 @@ export const Community = () => {
                     const querySnapshot = await getDocs(q);
                     const postsData = querySnapshot.docs.map(doc => doc.data());
                     setPosts(postsData);
-
-                    console.log("Fetched posts. Firestore reads:", querySnapshot.size);
                 }
             } catch (error) {
                 console.error("Could not fetch posts:", error);
@@ -80,7 +77,6 @@ export const Community = () => {
                     }
                     setModerators(moderatorsData);
 
-                    console.log("Fetched moderators. Firestore reads:", communityData.moderators.length);
                 }
             } catch (error) {
                 console.error("Could not fetch moderators:", error);
