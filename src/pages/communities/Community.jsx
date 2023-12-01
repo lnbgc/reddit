@@ -22,7 +22,7 @@ export const Community = () => {
     const [moderators, setModerators] = useState([]);
 
     useEffect(() => {
-        const fetchCommunity = async () => {
+        const fetchData = async () => {
             try {
                 const q = query(collection(db, "communities"), where("url", "==", communityURL));
                 const querySnapshot = await getDocs(q);
@@ -37,35 +37,34 @@ export const Community = () => {
                 const communityData = communityDoc?.data();
                 setCommunityData(communityData);
 
-                localStorage.setItem("communityData", JSON.stringify(communityData));
+                console.log("Fetched community data. Firestore reads:", querySnapshot.size);
             } catch (error) {
                 console.error("Could not fetch community data:", error);
                 // navigate to 404 page
             }
         };
-        fetchCommunity();
+
+        if (communityURL) {
+            fetchData();
+        }
     }, [communityURL]);
 
     useEffect(() => {
         const fetchPosts = async () => {
             try {
                 if (communityData) {
-                    const q = query(collection(db, "posts"), where("community", "==", communityData.id))
+                    const q = query(collection(db, "posts"), where("community", "==", communityData.id));
                     const querySnapshot = await getDocs(q);
                     const postsData = querySnapshot.docs.map(doc => doc.data());
                     setPosts(postsData);
 
-                    localStorage.setItem("communityPosts", JSON.stringify(postsData));
+                    console.log("Fetched posts. Firestore reads:", querySnapshot.size);
                 }
             } catch (error) {
                 console.error("Could not fetch posts:", error);
             }
         };
 
-        fetchPosts();
-    }, [communityData]);
-
-    useEffect(() => {
         const fetchModerators = async () => {
             try {
                 if (communityData) {
@@ -75,23 +74,22 @@ export const Community = () => {
                         if (userDoc.exists()) {
                             moderatorsData.push(userDoc.data());
                         } else {
-                            console.error(error);
+                            console.error("Moderator not found:", moderatorID);
                             continue;
                         }
                     }
                     setModerators(moderatorsData);
 
-                    localStorage.setItem("communityModerators", JSON.stringify(moderatorsData));
+                    console.log("Fetched moderators. Firestore reads:", communityData.moderators.length);
                 }
             } catch (error) {
                 console.error("Could not fetch moderators:", error);
             }
         };
 
+        fetchPosts();
         fetchModerators();
     }, [communityData]);
-
-
 
 
     if (communityData == null) {
@@ -132,7 +130,7 @@ export const Community = () => {
                         )}
                     </div>
                     {isFollowing ? (
-                        <Link Link to={CREATEPOST} state={{ communityData }} className="mt-4 flex items-center gap-2 w-full border border-border rounded-md shadow-sm p-2">
+                        <Link to={CREATEPOST} state={{ communityData }} className="mt-4 flex items-center gap-2 w-full border border-border rounded-md shadow-sm p-2">
                             <img src={userData.avatar} className="avatar-md" alt="" />
                             <input type="text" placeholder="Create post" className="text-sm font-medium outline-none bg-transparent placeholder:text-faint rounded-md w-full border border-border py-2 px-3" />
                             <Button>
@@ -158,14 +156,10 @@ export const Community = () => {
                             <p>{communityData.description}</p>
                         )}
 
-                        {communityData.createdAt && communityData.createdAt.toDate && (
-                            <div className="border-y border-border py-4 flex items-center font-medium gap-2">
-                                <Cake className="icon-sm" />
-                                <p>Created {moment(communityData.createdAt.toDate()).format('MMM D, YYYY')}.</p>
-                            </div>
-                        )}
-
-
+                        <div className="border-y border-border py-4 flex items-center font-medium gap-2">
+                            <Cake className="icon-sm" />
+                            <p>Created {moment(communityData.createdAt.toDate()).format('MMM D, YYYY')}.</p>
+                        </div>
                         <div className="flex justify-between items-center font-medium">
                             <span className="">
                                 Followers:
