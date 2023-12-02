@@ -3,8 +3,9 @@ import { db } from "@utils/firebase";
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { ReplyButton, ReplyForm } from "./CreateReply";
+import moment from "moment";
 
-export const Reply = ({ reply, postID, postAuthor }) => {
+export const Reply = ({ reply, postID, postAuthor, createdAt }) => {
     const [creatorData, setCreatorData] = useState(null);
     const [replies, setReplies] = useState([]);
     const [show, setShow] = useState(false);
@@ -52,7 +53,7 @@ export const Reply = ({ reply, postID, postAuthor }) => {
                                 <span>{creatorData.username}</span>
                             )}
                             <span className="w-1 h-1 bg-loading rounded-full" />
-                            <span className="text-muted font-normal">moment</span>
+                            <span className="text-muted font-normal">{moment(createdAt.toDate()).fromNow()}</span>
                         </div>
                     </div>
                     <div className="flex border-l-1.5 border-border flex-col gap-4 ml-3 pl-[18px]">

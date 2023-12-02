@@ -4,8 +4,9 @@ import { collection, doc, getDoc, getDocs, query, where } from "firebase/firesto
 import { ReplyButton, ReplyForm } from "./CreateReply";
 import { Reply } from "./Reply";
 import { Vote } from "@components/votes/Vote";
+import moment from "moment";
 
-export const Comment = ({ comment, postAuthor, postID }) => {
+export const Comment = ({ comment, postAuthor, postID, createdAt }) => {
     const [creatorData, setCreatorData] = useState(null);
     const [replies, setReplies] = useState([]);
     const [show, setShow] = useState(false);
@@ -54,7 +55,7 @@ export const Comment = ({ comment, postAuthor, postID }) => {
                                 <span>{creatorData.username}</span>
                             )}
                             <span className="w-1 h-1 bg-loading rounded-full" />
-                            <span className="text-muted font-normal">moment</span>
+                            <span className="text-muted font-normal">{moment(createdAt.toDate()).fromNow()}</span>
                         </div>
                     </div>
                     <div className="flex border-l-1.5 border-border flex-col gap-4 ml-3 pl-[18px]">
@@ -72,7 +73,7 @@ export const Comment = ({ comment, postAuthor, postID }) => {
                             setShow={setShow}
                         />
                         {replies.map((reply) => (
-                            <Reply key={reply.id} reply={reply} postID={postID} postAuthor={postAuthor} />
+                            <Reply key={reply.id} reply={reply} postID={postID} postAuthor={postAuthor} createdAt={reply.createdAt} />
                         ))}
                     </div>
                 </>

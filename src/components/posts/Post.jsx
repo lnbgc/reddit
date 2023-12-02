@@ -111,7 +111,7 @@ export const Post = ({ post, type }) => {
 
     const PreviewMore = () => {
         return (
-            <div className="flex justify-between text-muted font-medium">
+            <div className="flex items-center justify-between text-muted font-medium">
                 <div className="flex gap-4">
                     <Vote type="post" id={post.id} upvotes={post.upvotes} downvotes={post.downvotes} />
                     <div className="flex text-sm items-center gap-1">

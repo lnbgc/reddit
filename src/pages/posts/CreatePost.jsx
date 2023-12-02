@@ -121,7 +121,7 @@ export const CreatePost = () => {
           <CheckCircle className="text-green-500 h-10 w-10" />
         </div>
       ) : (
-        <div className="min-headerless container">
+        <div className="min-headerless pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12 grid grid-cols-12 gap-3 min-[1152px]:gap-6">
           <div className="col-span-full md:col-span-8">
             <h1 className="font-bold text-xl border-b border-border pb-2">Create a post</h1>
             <form className="pt-3 flex flex-col gap-3">

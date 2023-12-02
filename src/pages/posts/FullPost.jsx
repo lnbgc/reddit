@@ -114,7 +114,7 @@ export const FullPost = () => {
                 {comments.length > 0 ? (
                     <div className="flex flex-col gap-4">
                         {comments.map(comment => (
-                            <Comment key={comment.id} comment={comment} postID={postID} postAuthor={post.createdBy} />
+                            <Comment key={comment.id} comment={comment} postID={postID} postAuthor={post.createdBy} createdAt={comment.createdAt} />
                         ))}
                     </div>
                 ) : (
