@@ -104,7 +104,7 @@ export const Community = () => {
 
     return (
         <div className="min-headerless">
-            <div className="pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12 grid grid-cols-12 gap-6">
+            <div className="pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12 grid grid-cols-12 gap-3 min-[1152px]:gap-6">
                 <div className="col-span-full md:col-span-8">
                     <div className="flex justify-between">
                         <div className="flex items-center gap-3">
@@ -139,11 +139,18 @@ export const Community = () => {
                         </div>
                     )}
 
-                    <div className="divide-y divide-border">
-                        {posts.map(post => (
-                            <Post type="preview" key={post.id} post={post} />
-                        ))}
-                    </div>
+                    {posts.length > 0 ? (
+                        <div className="divide-y divide-border">
+                            {posts.map(post => (
+                                <Post type="preview" key={post.id} post={post} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="pt-6 flex justify-center">
+                            <span className="text-sm font-medium text-muted">No posts yet.</span>
+                        </div>
+                    )}
+
                 </div>
                 <div className="col-span-4 hidden text-sm md:flex flex-col gap-3">
                     <div className="border border-border rounded-md shadow-sm p-6 flex flex-col gap-3">
