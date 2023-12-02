@@ -1,3 +1,4 @@
+import { Filters } from "@components/posts/Filters";
 import { Post } from "@components/posts/Post";
 import { Button } from "@components/ui/Button";
 import { Logo } from "@components/ui/Logo";
@@ -5,7 +6,7 @@ import { useAuth } from "@contexts/AuthContext";
 import { CREATECOMMUNITY, REGISTER } from "@routes/routes";
 import { db } from "@utils/firebase";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
-import { Github, Linkedin, Mail } from "lucide-react";
+import { Linkedin, Mail } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -62,11 +63,11 @@ export const Index = () => {
   }, [userData]);
 
   return (
-    <div className="min-headerless container">
+    <div className="min-headerless pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12 grid grid-cols-12 gap-3 min-[1152px]:gap-6">
       <div className="hidden lg:flex lg:col-span-3">
 
         {userData ? (
-          <div className="h-fit w-full sticky flex flex-col gap-4 top-[54px] min-[1152px]:top-[78px]">
+          <div className="h-fit w-full sticky flex flex-col gap-4 top-[62px] min-[1152px]:top-[78px]">
             {favorites.length > 0 ? (
               <div className="border border-border rounded-md p-4 flex flex-col gap-4">
                 <span className="text-xs uppercase font-medium text-faint">Favorite communities</span>
@@ -117,7 +118,7 @@ export const Index = () => {
 
           </div>
         ) : (
-          <div className="h-fit w-full sticky top-[54px] min-[1152px]:top-[78px]">
+          <div className="h-fit w-full sticky top-[62px] min-[1152px]:top-[78px]">
             <div className="border border-border rounded-md p-4 flex flex-col gap-4">
               <span className="text-xs uppercase font-medium text-faint">About the project</span>
               <p className="text-sm font-medium">Thank you for downloading my repository! If you haven't yet make sure to read the project details <a className="underline" href="https://github.com/lnbgc/reddit#readme">right here</a>.</p>
@@ -139,6 +140,7 @@ export const Index = () => {
 
       {posts.length > 0 ? (
         <div className="col-span-full md:col-span-8 lg:col-span-6 divide-y divide-border">
+          <Filters />
           {posts.map(post => (
             <Post type="preview" key={post.id} post={post} />
           ))}
@@ -154,7 +156,7 @@ export const Index = () => {
       )}
 
       <div className="hidden md:flex md:col-span-4 lg:col-span-3">
-        <div className="w-full h-fit sticky top-[54px] min-[1152px]:top-[78px] flex flex-col gap-4">
+        <div className="w-full h-fit sticky top-[62px] min-[1152px]:top-[78px] flex flex-col gap-4">
 
           {userData ? (
             <div className="border border-border rounded-md p-4 flex flex-col gap-4">

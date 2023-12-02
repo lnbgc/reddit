@@ -120,10 +120,6 @@ export const Post = ({ post, type }) => {
                         <span className="hidden md:block">comments</span>
                     </div>
                     <SavePost postID={post.id} />
-                    <div className="flex items-center gap-1 text-sm">
-                        <Share2 className="icon-sm" />
-                        <span className="hidden md:block">Share</span>
-                    </div>
                 </div>
                 {isModerator || userData?.uid === post.createdBy ? (
                     <Trash className="icon-xs cursor-pointer" onClick={() => setShowModal(true)} />
