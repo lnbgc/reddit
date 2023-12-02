@@ -3,13 +3,13 @@ import { Textarea } from "@components/ui/Textarea";
 import { useAuth } from "@contexts/AuthContext";
 import { db } from "@utils/firebase";
 import { addDoc, arrayUnion, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
-import { MessageCircle } from "lucide-react"
+import { MessageSquare } from "lucide-react"
 import { useState } from "react"
 
 export const ReplyButton = ({ setShow }) => {
     return (
         <div className=" flex font-medium text-sm items-center gap-1 cursor-pointer w-fit select-none" onClick={() => setShow((show) => !show)}>
-            <MessageCircle className="icon-sm" />
+            <MessageSquare className="icon-sm" />
             Reply
         </div>
     )

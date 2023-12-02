@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "@utils/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
 import defaultAvatar from "@assets/user-default.svg";
 
 const UserContext = createContext();
@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }) => {
                 following_users: [],
                 following_communities: [],
                 favorite_communities: [],
+                createdAt: serverTimestamp(),
                 saved_posts: [],
                 posts: [],
                 upvoted: [],
@@ -60,7 +61,7 @@ export const AuthProvider = ({ children }) => {
                 console.error("Could not fetch user data:", error);
             }
         };
-    
+
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
             if (currentUser) {
@@ -69,10 +70,10 @@ export const AuthProvider = ({ children }) => {
                 setUserData(null);
             }
         });
-    
+
         return () => unsubscribe();
     }, []);
-    
+
 
     useEffect(() => {
         localStorage.setItem("user", JSON.stringify(user));

@@ -4,7 +4,7 @@ import { Vote } from "@components/votes/Vote";
 import { useAuth } from "@contexts/AuthContext";
 import { db } from "@utils/firebase";
 import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
-import { MessageCircle, Share2, Shield, ShieldEllipsis, Trash } from "lucide-react";
+import { MessageSquare, Share2, Shield, ShieldEllipsis, Trash } from "lucide-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -114,7 +114,7 @@ export const Post = ({ post, type }) => {
                 <div className="flex gap-4">
                     <Vote type="post" id={post.id} upvotes={post.upvotes} downvotes={post.downvotes} />
                     <div className="flex text-sm items-center gap-1">
-                        <MessageCircle className="icon-sm" />
+                        <MessageSquare className="icon-sm" />
                         <p>{post.comments.length} </p>
                         <span className="hidden md:block">comments</span>
                     </div>
