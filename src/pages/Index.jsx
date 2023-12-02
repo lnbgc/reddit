@@ -62,7 +62,7 @@ export const Index = () => {
   }, [userData]);
 
   return (
-    <div className="min-headerless pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12 grid grid-cols-12 gap-3 min-[1152px]:gap-6">
+    <div className="min-headerless container">
       <div className="hidden lg:flex lg:col-span-3">
 
         {userData ? (

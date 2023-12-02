@@ -107,15 +107,20 @@ export const FullPost = () => {
 
     const followersCount = communityData.followers.length;
     return (
-        <div className="min-headerless pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12 grid grid-cols-12 gap-6">
+        <div className="min-headerless pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12 grid grid-cols-12 gap-3 min-[1152px]:gap-6">
             <div className="col-span-full md:col-span-8 flex flex-col gap-4">
                 <Post post={post} type="full" />
                 <CreateComment postID={postID} />
-                <div className="flex flex-col gap-4">
-                    {comments.map(comment => (
-                        <Comment key={comment.id} comment={comment} postID={postID} postAuthor={post.createdBy} />
-                    ))}
-                </div>
+                {comments.length > 0 ? (
+                    <div className="flex flex-col gap-4">
+                        {comments.map(comment => (
+                            <Comment key={comment.id} comment={comment} postID={postID} postAuthor={post.createdBy} />
+                        ))}
+                    </div>
+                ) : (
+                    <span className="text-sm font-medium text-muted text-center">No comments yet. Be the first to share your opinion!</span>
+                )}
+
 
             </div>
             <div className="col-span-4 hidden text-sm md:flex flex-col gap-3">

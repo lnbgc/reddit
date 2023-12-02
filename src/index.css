@@ -67,6 +67,9 @@
   .btn-danger {
     @apply inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium shadow-sm px-4 py-2 select-none outline-none border border-red-500 text-red-500 hover:bg-red-500/10 cursor-pointer
   }
+  .container {
+    @apply pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12 grid grid-cols-12 gap-3 min-[1152px]:gap-6
+  }
 }
 
 .modal {
