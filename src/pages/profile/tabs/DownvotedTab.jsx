@@ -16,10 +16,10 @@ export const DownvotedTab = ({ downvoted, username }) => {
                             <ArrowBigDown className={`stroke-[1.5px] ${userData && post.downvotes.includes(userData.uid) ? "fill-accent stroke-accent" : ''}`} />
                         </div>
                         {post.image ? (
-                            <img src={post.image} className="rounded-md object-cover w-28 h-20" />
+                            <img src={post.image} className="rounded-md object-cover w-28 h-24" />
 
                         ) : (
-                            <div className="rounded-md border border-border flex justify-center items-center w-28 h-20">
+                            <div className="rounded-md border border-border flex justify-center items-center w-28 h-24">
                                 <FileText className="text-faint" />
                             </div>
                         )}

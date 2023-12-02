@@ -1,14 +1,15 @@
+import { SavePost } from "@components/posts/SavePost";
 import { useAuth } from "@contexts/AuthContext"
 import { ArrowBigDown, ArrowBigUp, FileText, MessageSquare } from "lucide-react"
 import moment from "moment";
 
-export const PostsTab = ({ posts, username }) => {
+export const SavedTab = ({ saved, username }) => {
 
     const { userData } = useAuth();
 
     return (
         <ul className="flex flex-col gap-3">
-            {posts.map((post) => (
+            {saved.map((post) => (
                 <li key={post.id} className="border border-border rounded-md p-2 flex gap-4">
                     <div className="flex gap-2">
                         <div className="flex flex-col items-center justify-between font-medium">
@@ -37,11 +38,12 @@ export const PostsTab = ({ posts, username }) => {
                                 <p>{moment(post.createdAt.toDate()).fromNow()}</p>
                             </div>
                         </div>
-                        <div className="text-sm font-medium">
+                        <div className="text-sm flex gap-3 font-medium">
                             <div className="flex items-center gap-1">
                                 <MessageSquare className="icon-sm" />
                                 {post.comments.length} comments
                             </div>
+                            <SavePost postID={post.id} />
                         </div>
                     </div>
                 </li>

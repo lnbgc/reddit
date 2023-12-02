@@ -5,10 +5,10 @@ import { useParams } from "react-router-dom"
 import { PostsTab } from "./tabs/PostsTab";
 import { UpvotedTab } from "./tabs/UpvotedTab";
 import { DownvotedTab } from "./tabs/DownvotedTab";
-import { Cake, ChevronDownCircle, ChevronUpCircle, FileBadge, GalleryHorizontalEnd, Loader2, MessageSquare, UserCircle2 } from "lucide-react";
-import { OverviewTab } from "./tabs/OverviewTab";
+import { Bookmark, Cake, ChevronDownCircle, ChevronUpCircle, FileBadge, Loader2, MessageSquare, UserCircle2 } from "lucide-react";
 import { Button } from "@components/ui/Button";
 import moment from "moment";
+import { SavedTab } from "./tabs/SavedTab";
 
 export const Profile = () => {
 
@@ -18,8 +18,9 @@ export const Profile = () => {
     const [upvoted, setUpvoted] = useState([]);
     const [downvoted, setDownvoted] = useState([]);
     const [posts, setPosts] = useState([]);
+    const [savedPosts, setSavedPosts] = useState([]);
 
-    const [activeTab, setActiveTab] = useState("Overview");
+    const [activeTab, setActiveTab] = useState("Posts");
 
 
     const fetchUser = async () => {
@@ -72,6 +73,17 @@ export const Profile = () => {
         }
     }
 
+    const fetchSavedPosts = async () => {
+        try {
+            const q = query(collection(db, "posts"), where("id", "in", profile.saved_posts));
+            const querySnapshot = await getDocs(q);
+            const postsData = querySnapshot.docs.map((doc) => doc.data());
+            setSavedPosts(postsData);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     useEffect(() => {
         console.log("Effect: Fetching user");
         fetchUser();
@@ -88,17 +100,20 @@ export const Profile = () => {
         if (profile && profile.posts && profile.posts.length > 0) {
             fetchPosts();
         }
+        if (profile && profile.saved_posts && profile.saved_posts.length > 0) {
+            fetchSavedPosts();
+        }
     }, [profile]);
 
 
     const tabContent = () => {
         switch (activeTab) {
-            case "Overview":
-                return <OverviewTab />;
             case "Posts":
                 return <PostsTab posts={posts} username={profile.username} />;
             case "Upvoted":
                 return <UpvotedTab upvoted={upvoted} username={profile.username} />;
+            case "Saved":
+                return <SavedTab saved={savedPosts} username={profile.username} />;
             case "Downvoted":
                 return <DownvotedTab downvoted={downvoted} username={profile.username} />;
             default:
@@ -119,30 +134,30 @@ export const Profile = () => {
     return (
         <div className="min-headerless ">
             <ul className="py-2 flex font-medium uppercase gap-2">
-                <li onClick={() => setActiveTab("Overview")} className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-1 px-2 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "Overview" ? "bg-secondary hover:no-underline" : ""
-                    }`}>
-                    <GalleryHorizontalEnd className="icon-sm" />
-                    Overview
-                </li>
                 <li onClick={() => setActiveTab("Posts")} className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-1 px-2 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "Posts" ? "bg-secondary hover:no-underline" : ""
                     }`}>
                     <FileBadge className="icon-sm" />
-                    Posts
+                    <span className="hidden md:block">Posts</span>
                 </li>
                 <li onClick={() => setActiveTab("Comments")} className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-1 px-2 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "Comments" ? "bg-secondary hover:no-underline" : ""
                     }`}>
                     <MessageSquare className="icon-sm" />
-                    Comments
+                    <span className="hidden md:block">Comments</span>
+                </li>
+                <li onClick={() => setActiveTab("Saved")} className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-1 px-2 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "Saved" ? "bg-secondary hover:no-underline" : ""
+                    }`}>
+                    <Bookmark className="icon-sm" />
+                    <span className="hidden md:block">Saved</span>
                 </li>
                 <li onClick={() => setActiveTab("Upvoted")} className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-1 px-2 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "Upvoted" ? "bg-secondary hover:no-underline" : ""
                     }`}>
                     <ChevronUpCircle className="icon-sm" />
-                    Upvoted
+                    <span className="hidden md:block">Upvoted</span>
                 </li>
                 <li onClick={() => setActiveTab("Downvoted")} className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-1 px-2 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "Downvoted" ? "bg-secondary hover:no-underline" : ""
                     }`}>
                     <ChevronDownCircle className="icon-sm" />
-                    Downvoted
+                    <span className="hidden md:block">Downvoted</span>
                 </li>
             </ul>
             <div className="grid grid-cols-12 gap-6">
