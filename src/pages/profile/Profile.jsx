@@ -5,10 +5,11 @@ import { useParams } from "react-router-dom"
 import { PostsTab } from "./tabs/PostsTab";
 import { UpvotedTab } from "./tabs/UpvotedTab";
 import { DownvotedTab } from "./tabs/DownvotedTab";
-import { Bookmark, Cake, ChevronDownCircle, ChevronUpCircle, FileBadge, Loader2, MessageSquare, UserCircle2 } from "lucide-react";
+import { Bookmark, Cake, ChevronDownCircle, ChevronRight, ChevronUpCircle, FileBadge, Loader2, MessageSquare, UserCircle2 } from "lucide-react";
 import moment from "moment";
 import { SavedTab } from "./tabs/SavedTab";
 import { FollowUser } from "./FollowUser";
+import { FollowersTab } from "./tabs/FollowersTab";
 
 export const Profile = () => {
 
@@ -117,6 +118,8 @@ export const Profile = () => {
                 return <SavedTab saved={savedPosts} username={profile.username} />;
             case "Downvoted":
                 return <DownvotedTab downvoted={downvoted} username={profile.username} />;
+            case "Followers":
+                return <FollowersTab profileID={profile.uid} />;
             default:
                 return null;
         }
@@ -181,6 +184,9 @@ export const Profile = () => {
                                 <div className="flex items-center gap-2">
                                     <UserCircle2 className="icon-sm" />
                                     <p>{followersCount}</p>
+                                    {profile.followers.length && (
+                                        <ChevronRight className="icon-sm cursor-pointer" onClick={() => setActiveTab("Followers")} />
+                                    )}
                                 </div>
                             </div>
                             <div>
