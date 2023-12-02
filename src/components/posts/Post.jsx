@@ -8,6 +8,7 @@ import { MessageSquare, Share2, Shield, ShieldEllipsis, Trash } from "lucide-rea
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { SavePost } from "./SavePost";
 
 export const Post = ({ post, type }) => {
     const { userData } = useAuth();
@@ -118,6 +119,7 @@ export const Post = ({ post, type }) => {
                         <p>{post.comments.length} </p>
                         <span className="hidden md:block">comments</span>
                     </div>
+                    <SavePost postID={post.id} />
                     <div className="flex items-center gap-1 text-sm">
                         <Share2 className="icon-sm" />
                         <span className="hidden md:block">Share</span>
