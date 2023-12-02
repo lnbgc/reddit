@@ -6,9 +6,9 @@ import { PostsTab } from "./tabs/PostsTab";
 import { UpvotedTab } from "./tabs/UpvotedTab";
 import { DownvotedTab } from "./tabs/DownvotedTab";
 import { Bookmark, Cake, ChevronDownCircle, ChevronUpCircle, FileBadge, Loader2, MessageSquare, UserCircle2 } from "lucide-react";
-import { Button } from "@components/ui/Button";
 import moment from "moment";
 import { SavedTab } from "./tabs/SavedTab";
+import { FollowUser } from "./FollowUser";
 
 export const Profile = () => {
 
@@ -21,7 +21,6 @@ export const Profile = () => {
     const [savedPosts, setSavedPosts] = useState([]);
 
     const [activeTab, setActiveTab] = useState("Posts");
-
 
     const fetchUser = async () => {
         try {
@@ -84,6 +83,8 @@ export const Profile = () => {
         }
     }
 
+
+
     useEffect(() => {
         console.log("Effect: Fetching user");
         fetchUser();
@@ -130,6 +131,7 @@ export const Profile = () => {
     }
 
     const followersCount = profile.followers.length;
+
 
     return (
         <div className="min-headerless ">
@@ -189,11 +191,7 @@ export const Profile = () => {
                                 </div>
                             </div>
                         </div>
-
-                        <Button type="primary" width="full">
-                            Follow
-                        </Button>
-
+                        <FollowUser profileID={profile.uid} />
                     </div>
                 </div>
             </div>
