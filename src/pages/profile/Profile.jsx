@@ -12,7 +12,6 @@ import { FollowUser } from "./FollowUser";
 import { FollowersTab } from "./tabs/FollowersTab";
 import { useAuth } from "@contexts/AuthContext";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { FileInput } from "@components/ui/FileInput";
 
 export const Profile = () => {
 
@@ -23,7 +22,6 @@ export const Profile = () => {
     const [profile, setProfile] = useState(null);
     const [upvoted, setUpvoted] = useState([]);
     const [downvoted, setDownvoted] = useState([]);
-    const [posts, setPosts] = useState([]);
     const [savedPosts, setSavedPosts] = useState([]);
 
     const [activeTab, setActiveTab] = useState("Posts");
@@ -77,17 +75,6 @@ export const Profile = () => {
         }
     }
 
-    const fetchPosts = async () => {
-        try {
-            const q = query(collection(db, "posts"), where("id", "in", profile.posts));
-            const querySnapshot = await getDocs(q);
-            const postsData = querySnapshot.docs.map((doc) => doc.data());
-            setPosts(postsData);
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
     const fetchSavedPosts = async () => {
         try {
             const q = query(collection(db, "posts"), where("id", "in", profile.saved_posts));
@@ -123,9 +110,6 @@ export const Profile = () => {
         if (profile && profile.downvoted && profile.downvoted.length > 0) {
             fetchDownvoted();
         }
-        if (profile && profile.posts && profile.posts.length > 0) {
-            fetchPosts();
-        }
         if (profile && profile.saved_posts && profile.saved_posts.length > 0) {
             fetchSavedPosts();
         }
@@ -138,7 +122,7 @@ export const Profile = () => {
     const tabContent = () => {
         switch (activeTab) {
             case "Posts":
-                return <PostsTab posts={posts} username={profile.username} />;
+                return <PostsTab profile={profile} />;
             case "Upvoted":
                 return <UpvotedTab upvoted={upvoted} username={profile.username} />;
             case "Saved":
@@ -238,6 +222,7 @@ export const Profile = () => {
                 </div>
                 <div className="hidden md:col-span-4 pt-2 md:flex flex-col gap-4">
                     <div className="border border-border rounded-md font-medium text-sm shadow-sm flex flex-col gap-4 p-6">
+                        <span className="">u/{profile.username}</span>
                         <div className="flex flex-col">
                             <div className="relative w-fit">
                                 <img
@@ -253,7 +238,6 @@ export const Profile = () => {
                                     </div>
                                 )}
                             </div>
-                            <span>u/{profile.username}</span>
                         </div>
                         <div className="flex justify-between">
                             <div>
