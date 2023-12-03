@@ -3,7 +3,6 @@ import { collection, doc, getDocs, query, updateDoc, where } from "firebase/fire
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom"
 import { PostsTab } from "./tabs/PostsTab";
-import { DownvotedTab } from "./tabs/DownvotedTab";
 import { Bookmark, Cake, ChevronDownCircle, ChevronRight, ChevronUpCircle, FileBadge, Loader2, MessageSquare, Pen, UserCircle2 } from "lucide-react";
 import moment from "moment";
 import { FollowUser } from "./FollowUser";
@@ -12,28 +11,21 @@ import { useAuth } from "@contexts/AuthContext";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { SavedTab } from "./tabs/SavedTab";
 import { UpvotedTab } from "./tabs/UpvotedTab";
+import { DownvotedTab } from "./tabs/DownvotedTab";
 
 export const Profile = () => {
 
     const { username } = useParams();
-
     const { userData } = useAuth();
 
     const [profile, setProfile] = useState(null);
-
-    const [downvoted, setDownvoted] = useState([]);
-
-    const [activeTab, setActiveTab] = useState("Posts");
-
+    
     const [avatar, setAvatar] = useState(null);
     const [avatarPreview, setAvatarPreview] = useState(null);
-
+    
     const [moderating, setModerating] = useState([]);
-
-
-
-
-
+    
+    const [activeTab, setActiveTab] = useState("Posts");
 
     const fetchUser = async () => {
         try {
@@ -52,17 +44,6 @@ export const Profile = () => {
         }
     }
 
-    const fetchDownvoted = async () => {
-        try {
-            const q = query(collection(db, "posts"), where("id", "in", profile.downvoted));
-            const querySnapshot = await getDocs(q);
-            const downvotedData = querySnapshot.docs.map((doc) => doc.data());
-            setDownvoted(downvotedData);
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
     const fetchModerating = async () => {
         try {
             const q = query(collection(db, "communities"), where("id", "in", profile.moderating));
@@ -75,15 +56,10 @@ export const Profile = () => {
     }
 
     useEffect(() => {
-        console.log("Effect: Fetching user");
         fetchUser();
     }, [username]);
 
     useEffect(() => {
-        console.log("Effect: Fetching upvoted and downvoted posts");
-        if (profile && profile.downvoted && profile.downvoted.length > 0) {
-            fetchDownvoted();
-        }
         if (profile && profile.moderating && profile.moderating.length > 0) {
             fetchModerating();
         }
@@ -99,7 +75,7 @@ export const Profile = () => {
             case "Saved":
                 return <SavedTab profile={profile} />;
             case "Downvoted":
-                return <DownvotedTab downvoted={downvoted} username={profile.username} />;
+                return <DownvotedTab profile={profile}/>;
             case "Followers":
                 return <FollowersTab profileID={profile.uid} />;
             default:
