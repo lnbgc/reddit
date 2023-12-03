@@ -66,7 +66,7 @@ export const CommentsTab = ({ profile }) => {
 
     return (
         <>
-            {profile.comments.length > 0 ? (
+            {profile.comments?.length > 0 ? (
                 <ul className="flex flex-col gap-4">
                     {Object.entries(groupedComments).map(([postID, comments]) => (
                         <li key={postID} className="border border-border rounded-md">
