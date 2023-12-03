@@ -3,7 +3,6 @@ import { collection, doc, getDocs, query, updateDoc, where } from "firebase/fire
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom"
 import { PostsTab } from "./tabs/PostsTab";
-import { UpvotedTab } from "./tabs/UpvotedTab";
 import { DownvotedTab } from "./tabs/DownvotedTab";
 import { Bookmark, Cake, ChevronDownCircle, ChevronRight, ChevronUpCircle, FileBadge, Loader2, MessageSquare, Pen, UserCircle2 } from "lucide-react";
 import moment from "moment";
@@ -12,6 +11,7 @@ import { FollowersTab } from "./tabs/FollowersTab";
 import { useAuth } from "@contexts/AuthContext";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { SavedTab } from "./tabs/SavedTab";
+import { UpvotedTab } from "./tabs/UpvotedTab";
 
 export const Profile = () => {
 
@@ -20,7 +20,7 @@ export const Profile = () => {
     const { userData } = useAuth();
 
     const [profile, setProfile] = useState(null);
-    const [upvoted, setUpvoted] = useState([]);
+
     const [downvoted, setDownvoted] = useState([]);
 
     const [activeTab, setActiveTab] = useState("Posts");
@@ -49,17 +49,6 @@ export const Profile = () => {
             setProfile(profileData);
         } catch (error) {
             console.error("Could not fetch community data:", error);
-        }
-    }
-
-    const fetchUpvoted = async () => {
-        try {
-            const q = query(collection(db, "posts"), where("id", "in", profile.upvoted));
-            const querySnapshot = await getDocs(q);
-            const upvotedData = querySnapshot.docs.map((doc) => doc.data());
-            setUpvoted(upvotedData);
-        } catch (error) {
-            console.error(error);
         }
     }
 
@@ -92,9 +81,6 @@ export const Profile = () => {
 
     useEffect(() => {
         console.log("Effect: Fetching upvoted and downvoted posts");
-        if (profile && profile.upvoted && profile.upvoted.length > 0) {
-            fetchUpvoted();
-        }
         if (profile && profile.downvoted && profile.downvoted.length > 0) {
             fetchDownvoted();
         }
@@ -109,7 +95,7 @@ export const Profile = () => {
             case "Posts":
                 return <PostsTab profile={profile} />;
             case "Upvoted":
-                return <UpvotedTab upvoted={upvoted} username={profile.username} />;
+                return <UpvotedTab profile={profile} />;
             case "Saved":
                 return <SavedTab profile={profile} />;
             case "Downvoted":
