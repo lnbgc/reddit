@@ -12,6 +12,7 @@ import { FollowUser } from "./FollowUser";
 import { FollowersTab } from "./tabs/FollowersTab";
 import { useAuth } from "@contexts/AuthContext";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { SavedTest } from "./tabs/SavedTest";
 
 export const Profile = () => {
 
@@ -22,7 +23,6 @@ export const Profile = () => {
     const [profile, setProfile] = useState(null);
     const [upvoted, setUpvoted] = useState([]);
     const [downvoted, setDownvoted] = useState([]);
-    const [savedPosts, setSavedPosts] = useState([]);
 
     const [activeTab, setActiveTab] = useState("Posts");
 
@@ -75,17 +75,6 @@ export const Profile = () => {
         }
     }
 
-    const fetchSavedPosts = async () => {
-        try {
-            const q = query(collection(db, "posts"), where("id", "in", profile.saved_posts));
-            const querySnapshot = await getDocs(q);
-            const postsData = querySnapshot.docs.map((doc) => doc.data());
-            setSavedPosts(postsData);
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
     const fetchModerating = async () => {
         try {
             const q = query(collection(db, "communities"), where("id", "in", profile.moderating));
@@ -110,9 +99,6 @@ export const Profile = () => {
         if (profile && profile.downvoted && profile.downvoted.length > 0) {
             fetchDownvoted();
         }
-        if (profile && profile.saved_posts && profile.saved_posts.length > 0) {
-            fetchSavedPosts();
-        }
         if (profile && profile.moderating && profile.moderating.length > 0) {
             fetchModerating();
         }
@@ -126,7 +112,7 @@ export const Profile = () => {
             case "Upvoted":
                 return <UpvotedTab upvoted={upvoted} username={profile.username} />;
             case "Saved":
-                return <SavedTab saved={savedPosts} username={profile.username} />;
+                return <SavedTest profile={profile} />;
             case "Downvoted":
                 return <DownvotedTab downvoted={downvoted} username={profile.username} />;
             case "Followers":
