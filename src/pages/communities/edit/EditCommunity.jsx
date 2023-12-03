@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@utils/firebase";
 import { GeneralTab } from "./GeneralTab";
@@ -8,11 +8,13 @@ import { Button } from "@components/ui/Button";
 import { FlairsTab } from "./FlairsTab";
 import { RulesTab } from "./RulesTab";
 import { UsersTab } from "./UsersTab";
+import { useAuth } from "@contexts/AuthContext";
 
 export const EditCommunity = () => {
   const { communityURL } = useParams();
   const [communityData, setCommunityData] = useState(null);
   const [activeTab, setActiveTab] = useState("General");
+  const { userData } = useAuth();
 
   const fetchCommunityData = async () => {
     try {
@@ -55,6 +57,12 @@ export const EditCommunity = () => {
         <Loader2 className="animate-spin h-10 w-10" />
       </div>
     )
+  }
+
+  const isModerator = communityData && communityData.moderators.includes(userData?.uid);
+
+  if (!isModerator) {
+    return <Navigate to={`/r/${communityURL}`} />;
   }
 
   return (

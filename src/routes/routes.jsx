@@ -10,6 +10,8 @@ import { CreatePost } from "@pages/posts/CreatePost";
 import { FullPost } from "@pages/posts/FullPost";
 import { Profile } from "@pages/profile/Profile";
 import { Settings } from "@pages/auth/Settings";
+import { ProtectedRoute } from "./ProtectedRoute";
+import { AuthRoute } from "./AuthRoute";
 
 export const ROOT = "/";
 export const LOGIN = "/login";
@@ -26,17 +28,43 @@ export const SETTINGS = "/settings";
 export const Routes = () => {
     return (
         <RouterRoutes>
+            {/* PUBLIC ROUTES */}
             <Route path={ROOT} element={<Index />} />
-            <Route path={LOGIN} element={<Login />} />
-            <Route path={REGISTER} element={<Register />} />
-            <Route path={USERNAME} element={<SetUsername />} />
-            <Route path={CREATECOMMUNITY} element={<CreateCommunity />} />
             <Route path={COMMUNITY} element={<Community />} />
-            <Route path={EDITCOMMUNITY} element={<EditCommunity />} />
-            <Route path={CREATEPOST} element={<CreatePost />} />
             <Route path={POST} element={<FullPost />} />
             <Route path={PROFILE} element={<Profile />} />
-            <Route path={SETTINGS} element={<Settings />} />
+
+            {/* AUTH ROUTES */}
+            <Route
+                path={LOGIN}
+                element={<AuthRoute element={<Login />} />}
+            />
+            <Route
+                path={REGISTER}
+                element={<AuthRoute element={<Register />} />}
+            />
+            <Route
+                path={USERNAME}
+                element={<AuthRoute element={<SetUsername />} />}
+            />
+
+            {/* PROTECTED ROUTES */}
+            <Route
+                path={CREATECOMMUNITY}
+                element={<ProtectedRoute element={<CreateCommunity />} />}
+            />
+            <Route
+                path={CREATEPOST}
+                element={<ProtectedRoute element={<CreatePost />} />}
+            />
+            <Route
+                path={SETTINGS}
+                element={<ProtectedRoute element={<Settings />} />}
+            />
+
+            {/* PROTECTED ROUTE IN COMPONENT */}
+            <Route path={EDITCOMMUNITY} element={<EditCommunity />} />
+            
         </RouterRoutes>
     )
 }
