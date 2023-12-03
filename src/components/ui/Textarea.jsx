@@ -22,7 +22,7 @@ export const Textarea = ({ placeholder, label, error, description, value, onChan
   return (
     <div className="flex flex-col gap-2">
       {label && <label className="text-xs font-medium ml-1">{label}</label>}
-      {error && <span className="text-xs text-reddit font-medium ml-1">{error}</span>}
+      {error && <span className="error ml-1">{error}</span>}
       <div className="border border-border shadow-sm rounded-md p-2 focus-within:ring-1 focus-within:ring-faint">
         <textarea
           className="w-full resize-none text-sm text-normal bg-transparent outline-none placeholder:text-faint min-h-[6rem]"

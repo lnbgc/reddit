@@ -74,7 +74,7 @@ export const UpvotedTab = ({ profile }) => {
                                 <div className="font-bold text-muted hover:underline">
                                     {post.title}
                                 </div>
-                                <div className="flex items-center gap-2 text-sm">
+                                <div className="flex flex-wrap items-center gap-2 text-sm">
                                     <div className="font-bold hover:underline">r/{post.community?.name}</div>
                                     <p>posted by u/{profile.username}</p>
                                     <span className="w-1 h-1 bg-faint block rounded-full" />

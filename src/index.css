@@ -98,3 +98,19 @@
   -webkit-line-clamp: 3;
   overflow: hidden;
 }
+
+
+.scrollbar-tabs {
+  &::-webkit-scrollbar {
+    height: 5px;
+  }
+  &::-webkit-scrollbar-track {
+    background: hsl(var(--bg-secondary));
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 5px;
+  }
+}
+

@@ -62,7 +62,6 @@ export const DownvotedTab = ({ profile }) => {
                             </div>
                             {post.image ? (
                                 <img src={post.image} className="rounded-md object-cover w-28 h-24" />
-
                             ) : (
                                 <div className="rounded-md border border-border flex justify-center items-center w-28 h-24">
                                     <FileText className="text-faint" />
@@ -74,7 +73,7 @@ export const DownvotedTab = ({ profile }) => {
                                 <div className="font-bold text-muted hover:underline">
                                     {post.title}
                                 </div>
-                                <div className="flex items-center gap-2 text-sm">
+                                <div className="flex flex-wrap items-center gap-2 text-sm">
                                     <div className="font-bold hover:underline">r/{post.community?.name}</div>
                                     <p>posted by u/{profile.username}</p>
                                     <span className="w-1 h-1 bg-faint block rounded-full" />

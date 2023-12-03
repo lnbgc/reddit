@@ -20,7 +20,7 @@ export const ProfileMenu = ({ userData }) => {
   const currentYear = moment().format('YYYY');
 
   return (
-    <Dropdown trigger={<img src={userData.avatar} alt="" className="avatar-sm" />} top="top-14">
+    <Dropdown trigger={<img src={userData.avatar} alt="" className="w-5 h-5 object-cover rounded-sm" />} top="top-14">
       <div className="w-60 divide-y divide-border">
         <ul className="flex items-center ml-2 pb-3 gap-2">
           <img src={userData.avatar} className="avatar-sm" alt="" />

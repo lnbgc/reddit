@@ -3,7 +3,7 @@ import { collection, doc, getDocs, query, updateDoc, where } from "firebase/fire
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom"
 import { PostsTab } from "./tabs/PostsTab";
-import { Bookmark, Cake, ChevronDownCircle, ChevronRight, ChevronUpCircle, FileBadge, Loader2, MessageSquare, Pen, UserCircle2 } from "lucide-react";
+import { Cake, ChevronRight, Loader2, Pen, UserCircle2 } from "lucide-react";
 import moment from "moment";
 import { FollowUser } from "./FollowUser";
 import { FollowersTab } from "./tabs/FollowersTab";
@@ -13,6 +13,11 @@ import { SavedTab } from "./tabs/SavedTab";
 import { DownvotedTab } from "./tabs/DownvotedTab";
 import { UpvotedTab } from "./tabs/UpvotedTab";
 import { CommentsTab } from "./tabs/CommentsTab";
+import { Filters } from "@components/posts/Filters";
+import { Button } from "@components/ui/Button";
+import { Modal, ModalBody, ModalHeader } from "@components/ui/Modal";
+import { Textarea } from "@components/ui/Textarea";
+import { Input } from "@components/ui/Input";
 
 export const Profile = () => {
 
@@ -24,9 +29,18 @@ export const Profile = () => {
     const [avatar, setAvatar] = useState(null);
     const [avatarPreview, setAvatarPreview] = useState(null);
 
+    const [bio, setBio] = useState("");
+    const [bioLimit, setBioLimit] = useState(150 - bio.length);
+    const [social, setSocial] = useState("");
+
+    const [error, setError] = useState("");
+
     const [moderating, setModerating] = useState([]);
 
     const [activeTab, setActiveTab] = useState("Posts");
+
+    const [showBioModal, setShowBioModal] = useState(false);
+    const [showSocialModal, setShowSocialModal] = useState(false);
 
     const fetchUser = async () => {
         try {
@@ -134,104 +148,207 @@ export const Profile = () => {
 
     const userIsProfile = userData?.uid === profile.uid;
 
-    return (
-        <div className="min-headerless pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12">
-            <ul className="flex font-medium uppercase gap-2">
-                <li onClick={() => setActiveTab("Posts")} className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-1 px-2 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "Posts" ? "bg-secondary hover:no-underline" : ""
-                    }`}>
-                    <FileBadge className="icon-sm" />
-                    <span className="hidden md:block">Posts</span>
-                </li>
-                <li onClick={() => setActiveTab("Comments")} className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-1 px-2 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "Comments" ? "bg-secondary hover:no-underline" : ""
-                    }`}>
-                    <MessageSquare className="icon-sm" />
-                    <span className="hidden md:block">Comments</span>
-                </li>
-                <li onClick={() => setActiveTab("Saved")} className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-1 px-2 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "Saved" ? "bg-secondary hover:no-underline" : ""
-                    }`}>
-                    <Bookmark className="icon-sm" />
-                    <span className="hidden md:block">Saved</span>
-                </li>
-                <li onClick={() => setActiveTab("Upvoted")} className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-1 px-2 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "Upvoted" ? "bg-secondary hover:no-underline" : ""
-                    }`}>
-                    <ChevronUpCircle className="icon-sm" />
-                    <span className="hidden md:block">Upvoted</span>
-                </li>
-                <li onClick={() => setActiveTab("Downvoted")} className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-1 px-2 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "Downvoted" ? "bg-secondary hover:no-underline" : ""
-                    }`}>
-                    <ChevronDownCircle className="icon-sm" />
-                    <span className="hidden md:block">Downvoted</span>
-                </li>
-            </ul>
-            <div className="grid grid-cols-12 gap-6">
+    const handleBio = (value) => {
+        setBio(value);
+        setBioLimit(150 - value.length)
+    };
 
-                <div className="col-span-full md:col-span-8">
-                    <div className="py-2">
-                        {tabContent()}
-                    </div>
-                </div>
-                <div className="hidden md:col-span-4 pt-2 md:flex flex-col gap-4">
-                    <div className="border border-border rounded-md font-medium text-sm shadow-sm flex flex-col gap-4 p-6">
-                        <span className="">u/{profile.username}</span>
-                        <div className="flex flex-col">
-                            <div className="relative w-fit">
-                                <img
-                                    src={avatarPreview || profile.avatar}
-                                    className="w-16 h-16 object-cover rounded-full"
-                                />
-                                {userIsProfile && (
-                                    <div className="absolute bg-primary rounded-md p-1 -right-1 -bottom-0 border border-border shadow-sm">
-                                        <label className="cursor-pointer">
-                                            <Pen className="w-3 h-3" />
-                                            <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-                                        </label>
-                                    </div>
-                                )}
+    const updateBio = async (e) => {
+        e.preventDefault();
+        try {
+            const userDoc = doc(db, "users", profile.uid);
+            await updateDoc(userDoc, {
+                bio,
+            });
+            setBio("");
+            setError("");
+            setShowBioModal(false);
+        } catch (error) {
+            setError("Something went wrong. Please try again.")
+            console.error(error);
+        }
+    }
+
+    const updateSocial = async (e) => {
+        e.preventDefault();
+        try {
+            const userDoc = doc(db, "users", profile.uid);
+            await updateDoc(userDoc, {
+                social_link: social,
+            });
+            setSocial("");
+            setError("");
+            setShowSocialModal(false);
+            window.location.reload();
+        } catch (error) {
+            setError("Something went wrong. Please try again.")
+            console.error(error);
+        }
+    }
+
+
+    return (
+        <>
+            <div className="min-headerless pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12">
+                <div className="grid grid-cols-12 gap-3 min-[1152px]:gap-6">
+                    <div className="col-span-full md:col-span-8">
+                        <ul className="flex font-medium gap-6 text-[0.925rem] pb-1 overflow-auto scrollbar-tabs">
+                            <li onClick={() => setActiveTab("Posts")} className={`cursor-pointer ${activeTab === "Posts" ? "font-bold text-normal" : "font-medium text-muted"
+                                }`}>
+                                <span>Posts</span>
+                            </li>
+                            <li onClick={() => setActiveTab("Comments")} className={`cursor-pointer ${activeTab === "Comments" ? "font-bold text-normal" : "font-medium text-muted"
+                                }`}>
+                                <span>Comments</span>
+                            </li>
+                            {userIsProfile && (
+                                <li onClick={() => setActiveTab("Saved")} className={`cursor-pointer ${activeTab === "Saved" ? "font-bold text-normal" : "font-medium text-muted"
+                                    }`}>
+                                    <span>Saved</span>
+                                </li>
+                            )}
+                            <li onClick={() => setActiveTab("Upvoted")} className={`cursor-pointer ${activeTab === "Upvoted" ? "font-bold text-normal" : "font-medium text-muted"
+                                }`}>
+                                <span>Upvoted</span>
+                            </li>
+                            <li onClick={() => setActiveTab("Downvoted")} className={`cursor-pointer ${activeTab === "Downvoted" ? "font-bold text-normal" : "font-medium text-muted"
+                                }`}>
+                                <span>Downvoted</span>
+                            </li>
+                        </ul>
+                        <div className="mt-4">
+                            <Filters />
+                        </div>
+                        <div >
+                            <div>
+                                {tabContent()}
                             </div>
                         </div>
-                        <div className="flex justify-between">
-                            <div>
-                                <span className="font-bold">Followers</span>
-                                <div className="flex items-center gap-2">
-                                    <UserCircle2 className="icon-sm" />
-                                    <p>{followersCount}</p>
+                    </div>
+                    <div className="hidden md:col-span-4 md:flex flex-col gap-4">
+                        <div className="border border-border rounded-md font-medium text-sm shadow-sm flex flex-col gap-4 p-6">
+                            <div className="flex flex-col gap-2">
+                                <div className="relative w-fit">
+                                    <img
+                                        src={avatarPreview || profile.avatar}
+                                        className="w-16 h-16 object-cover rounded-md"
+                                    />
                                     {userIsProfile && (
-                                        <>
-                                            {profile.followers.length > 0 && (
-                                                <ChevronRight className="icon-sm cursor-pointer" onClick={() => setActiveTab("Followers")} />
-                                            )}
-                                        </>
+                                        <div className="absolute bg-primary rounded-full p-1 -right-3 -bottom-1 border border-border shadow-sm">
+                                            <label className="cursor-pointer">
+                                                <Pen className="w-3 h-3" />
+                                                <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+                                            </label>
+                                        </div>
                                     )}
                                 </div>
+                                <span>u/{profile.username}</span>
+                                {profile.bio ? (
+                                    <p className="text-muted font-normal">{profile.bio}</p>
+                                ) : (
+                                    <>
+                                        {userIsProfile && (
+                                            <Button type="primary" onClick={() => setShowBioModal(true)}>Add bio</Button>
+                                        )}
+                                    </>
+                                )}
+
+                                {profile.social_link ? (
+                                    <a href={profile.social_link} className="text-muted">{profile.social_link}</a>
+                                ) : (
+                                    <>
+                                        {userIsProfile && (
+                                            <Button type="secondary" onClick={() => setShowSocialModal(true)}>Add social link</Button>
+                                        )}
+                                    </>
+                                )}
                             </div>
-                            <div>
-                                <span className="font-bold">Cake Day</span>
-                                <div className="flex items-center gap-2">
-                                    <Cake className="icon-sm" />
-                                    <p>{moment(profile.createdAt.toDate()).format('MMM D, YYYY')}.</p>
+                            <div className="flex justify-between">
+                                <div>
+                                    <span className="font-bold">Followers</span>
+                                    <div className="flex items-center gap-2">
+                                        <UserCircle2 className="icon-sm" />
+                                        <p>{followersCount}</p>
+                                        {userIsProfile && (
+                                            <>
+                                                {profile.followers.length > 0 && (
+                                                    <ChevronRight className="icon-sm cursor-pointer" onClick={() => setActiveTab("Followers")} />
+                                                )}
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                                <div>
+                                    <span className="font-bold">Cake Day</span>
+                                    <div className="flex items-center gap-2">
+                                        <Cake className="icon-sm" />
+                                        <p>{moment(profile.createdAt.toDate()).format('MMM D, YYYY')}.</p>
+                                    </div>
                                 </div>
                             </div>
+                            <FollowUser profileID={profile.uid} />
                         </div>
-                        <FollowUser profileID={profile.uid} />
-                    </div>
 
-                    {moderating.length > 0 && (
-                        <div className="border border-border rounded-md font-medium text-sm shadow-sm flex flex-col gap-4 p-6">
-                            <span className="uppercase text-faint text-xs">{userIsProfile ? "You are" : `u/${profile.username} is`} moderating these communities</span>
-                            <ul className="space-y-1">
-                                {moderating.map(community => (
-                                    <li key={community.id}>
-                                        <Link to={`/r/${community.url}`} className="flex items-center gap-2 hover:bg-secondary p-1 rounded-md">
-                                            <img src={community.avatar} className="avatar-sm" alt="" />
-                                            {community.url}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
+                        {moderating.length > 0 && (
+                            <div className="border border-border rounded-md font-medium text-sm shadow-sm flex flex-col gap-4 p-6">
+                                <span className="uppercase text-faint text-xs">{userIsProfile ? "You are" : `u/${profile.username} is`} moderating these communities</span>
+                                <ul className="space-y-1">
+                                    {moderating.map(community => (
+                                        <li key={community.id}>
+                                            <Link to={`/r/${community.url}`} className="flex items-center gap-2 hover:bg-secondary p-1 rounded-md">
+                                                <img src={community.avatar} className="avatar-sm" alt="" />
+                                                {community.url}
+                                            </Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
-        </div>
+
+            {userIsProfile && (
+                <Modal show={showBioModal} setShow={setShowBioModal}>
+                    <ModalHeader>
+                        Add a bio to your profile
+                    </ModalHeader>
+                    <ModalBody>
+                        <div className="flex flex-col gap-8 w-80">
+                            <p className="text-sm font-medium">Describe yourself in a few words to introduce yourself to fellow redditors.</p>
+                            <Textarea
+                                label="Enter your bio"
+                                value={bio}
+                                onChange={handleBio}
+                                maxLength={150}
+                                error={error}
+                                description={`${bioLimit} characters remaining.`}
+                            />
+                            <Button type="primary" onClick={updateBio}>Save</Button>
+                        </div>
+                    </ModalBody>
+                </Modal>
+            )}
+
+            {userIsProfile && (
+                <Modal show={showSocialModal} setShow={setShowSocialModal}>
+                    <ModalHeader>
+                        Add a social link to your profile
+                    </ModalHeader>
+                    <ModalBody>
+                        <div className="flex flex-col gap-8 w-80">
+                            <p className="text-sm font-medium">Add a social so people can reach you outside of Reddit.</p>
+                            <Input
+                                label="Enter your social link"
+                                value={social}
+                                error={error}
+                                onChange={(e) => setSocial(e.target.value)}
+                            />
+                            <Button type="primary" onClick={updateSocial}>Save</Button>
+                        </div>
+                    </ModalBody>
+                </Modal>
+            )}
+        </>
     )
 }
