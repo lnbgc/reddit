@@ -1,7 +1,7 @@
 import { db, storage } from "@utils/firebase";
 import { collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { PostsTab } from "./tabs/PostsTab";
 import { UpvotedTab } from "./tabs/UpvotedTab";
 import { DownvotedTab } from "./tabs/DownvotedTab";
@@ -31,6 +31,7 @@ export const Profile = () => {
     const [avatar, setAvatar] = useState(null);
     const [avatarPreview, setAvatarPreview] = useState(null);
 
+    const [moderating, setModerating] = useState([]);
 
 
 
@@ -98,7 +99,16 @@ export const Profile = () => {
         }
     }
 
-
+    const fetchModerating = async () => {
+        try {
+            const q = query(collection(db, "communities"), where("id", "in", profile.moderating));
+            const querySnapshot = await getDocs(q);
+            const communityData = querySnapshot.docs.map((doc) => doc.data());
+            setModerating(communityData);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     useEffect(() => {
         console.log("Effect: Fetching user");
@@ -118,6 +128,9 @@ export const Profile = () => {
         }
         if (profile && profile.saved_posts && profile.saved_posts.length > 0) {
             fetchSavedPosts();
+        }
+        if (profile && profile.moderating && profile.moderating.length > 0) {
+            fetchModerating();
         }
     }, [profile]);
 
@@ -188,8 +201,8 @@ export const Profile = () => {
     const userIsProfile = userData.uid === profile.uid;
 
     return (
-        <div className="min-headerless ">
-            <ul className="py-2 flex font-medium uppercase gap-2">
+        <div className="min-headerless pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12">
+            <ul className="flex font-medium uppercase gap-2">
                 <li onClick={() => setActiveTab("Posts")} className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-1 px-2 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "Posts" ? "bg-secondary hover:no-underline" : ""
                     }`}>
                     <FileBadge className="icon-sm" />
@@ -223,7 +236,7 @@ export const Profile = () => {
                         {tabContent()}
                     </div>
                 </div>
-                <div className="hidden md:col-span-4 pt-2 md:block">
+                <div className="hidden md:col-span-4 pt-2 md:flex flex-col gap-4">
                     <div className="border border-border rounded-md font-medium text-sm shadow-sm flex flex-col gap-4 p-6">
                         <div className="flex flex-col">
                             <div className="relative w-fit">
@@ -263,6 +276,22 @@ export const Profile = () => {
                         </div>
                         <FollowUser profileID={profile.uid} />
                     </div>
+
+                    {moderating.length > 0 && (
+                        <div className="border border-border rounded-md font-medium text-sm shadow-sm flex flex-col gap-4 p-6">
+                            <span className="uppercase text-faint text-xs">{userData ? "You are" : `u/${profile.username} is`} moderating these communities</span>
+                            <ul className="space-y-1">
+                                {moderating.map(community => (
+                                    <li key={community.id}>
+                                        <Link to={`/r/${community.url}`} className="flex items-center gap-2 hover:bg-secondary p-1 rounded-md">
+                                            <img src={community.avatar} className="avatar-sm" alt="" />
+                                            {community.url}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
