@@ -267,6 +267,7 @@ export const Profile = () => {
 
                                 {profile.social_link ? (
                                     <a href={profile.social_link} className="text-muted">{profile.social_link}</a>
+
                                 ) : (
                                     <>
                                         {userIsProfile && (
