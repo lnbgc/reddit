@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }) => {
                 following_users: [],
                 following_communities: [],
                 favorite_communities: [],
+                moderating: [],
                 createdAt: serverTimestamp(),
                 saved_posts: [],
                 posts: [],

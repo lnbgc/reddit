@@ -83,6 +83,10 @@ export const UsersTab = ({ communityData }) => {
             await updateDoc(communityDoc, {
                 moderators: arrayUnion(selectedFollower.uid),
             });
+            const userDoc = doc(db, "users", selectedFollower.uid);
+            await updateDoc(userDoc, {
+                moderating: arrayUnion(communityData.id)
+            })
             setModerators((prevModerators) => [...prevModerators, selectedFollower]);
             setSelectedFollower(null);
             setShowAddModal(false);
@@ -96,6 +100,10 @@ export const UsersTab = ({ communityData }) => {
             const communityDoc = doc(db, "communities", communityData.id);
             await updateDoc(communityDoc, {
                 moderators: arrayRemove(userData.uid)
+            })
+            const userDoc = doc(db, "users", userData.uid);
+            await updateDoc(userDoc, {
+                moderating: arrayRemove(communityData.id)
             })
             navigate(`/r/${communityData.url}`)
         } catch (error) {

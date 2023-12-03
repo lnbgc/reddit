@@ -31,7 +31,7 @@ export const CreateCommunity = () => {
             setError("URL cannot be empty.");
             return false;
         }
-        if (url.length < 5 || url.length > 21) {
+        if (url.length < 3 || url.length > 21) {
             setError("URL must be between 3 and 21 characters.");
             return false;
         }
@@ -67,7 +67,8 @@ export const CreateCommunity = () => {
 
             const userDoc = doc(db, "users", userData.uid);
             await updateDoc(userDoc, {
-                following_communities: arrayUnion(communityID)
+                following_communities: arrayUnion(communityID),
+                moderating: arrayUnion(communityID)
             });
             setSuccess("Community created successfully! Redirecting...");
             setError("");
