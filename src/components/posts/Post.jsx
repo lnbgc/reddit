@@ -1,10 +1,8 @@
-import { Button } from "@components/ui/Button";
-import { Modal, ModalBody, ModalHeader } from "@components/ui/Modal";
 import { Vote } from "@components/votes/Vote";
 import { useAuth } from "@contexts/AuthContext";
 import { db } from "@utils/firebase";
-import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
-import { MessageSquare, Share2, Shield, ShieldEllipsis, Trash } from "lucide-react";
+import { doc, getDoc } from "firebase/firestore";
+import { MessageSquare } from "lucide-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -14,9 +12,6 @@ export const Post = ({ post, type }) => {
     const { userData } = useAuth();
     const [creatorData, setCreatorData] = useState(null);
     const [communityData, setCommunityData] = useState(null);
-    const [isModerator, setIsModerator] = useState(false);
-
-    const [showModal, setShowModal] = useState(false);
 
     const style = type === "full" ? "full" : "preview";
 
@@ -27,11 +22,7 @@ export const Post = ({ post, type }) => {
                 setCreatorData(userDoc.data());
             }
             const communityDoc = await getDoc(doc(db, "communities", post.community));
-            if (communityDoc.exists()) {
-                setCommunityData(communityDoc.data());
-                const isUserModerator = communityDoc.data().moderators.includes(userData.uid);
-                setIsModerator(isUserModerator);
-            }
+            setCommunityData(communityDoc.data());
         } catch (error) {
             console.error("Error fetching post data:", error);
         }
@@ -40,20 +31,6 @@ export const Post = ({ post, type }) => {
     useEffect(() => {
         fetchPostData();
     }, [post.createdBy, post.community, userData?.uid]);
-
-    const handleDelete = async () => {
-        try {
-            if (isModerator || userData.uid === post.createdBy) {
-                await deleteDoc(doc(db, "posts", post.id));
-                const updatedPosts = communityData.posts.filter((postId) => postId !== post.id);
-                await updateDoc(doc(db, "communities", post.community), {
-                    posts: updatedPosts,
-                });
-            }
-        } catch (error) {
-            console.error("Could not delete post;", error)
-        }
-    }
 
     const PreviewTitle = () => {
         return (
@@ -121,27 +98,6 @@ export const Post = ({ post, type }) => {
                     </div>
                     <SavePost postID={post.id} />
                 </div>
-                {isModerator || userData?.uid === post.createdBy ? (
-                    <Trash className="icon-xs cursor-pointer" onClick={() => setShowModal(true)} />
-                ) : null}
-                <Modal show={showModal} setShow={setShowModal}>
-                    <ModalHeader>
-                        <h2>Delete this post?</h2>
-                    </ModalHeader>
-                    <ModalBody>
-                        <div className="flex flex-col gap-8 w-80">
-                            <p className="text-sm">This action will permanently delete this post from its community and your user profile. Are you sure you want to proceed?</p>
-                            <div className="space-y-2">
-                                <Button type="primary" width="full" onClick={handleDelete}>
-                                    Yes, delete this post
-                                </Button>
-                                <Button type="secondary" width="full" onClick={() => setShowModal(false)}>
-                                    No, I changed my mind
-                                </Button>
-                            </div>
-                        </div>
-                    </ModalBody>
-                </Modal>
             </div>
         )
     }
