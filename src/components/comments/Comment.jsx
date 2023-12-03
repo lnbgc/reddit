@@ -5,6 +5,7 @@ import { ReplyButton, ReplyForm } from "./CreateReply";
 import { Reply } from "./Reply";
 import { Vote } from "@components/votes/Vote";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
 export const Comment = ({ comment, postAuthor, postID, createdAt }) => {
     const [creatorData, setCreatorData] = useState(null);
@@ -49,10 +50,9 @@ export const Comment = ({ comment, postAuthor, postID, createdAt }) => {
                             {comment.createdBy === postAuthor ? (
                                 <div className="space-x-1">
                                     <span className="font-bold">OP</span>
-                                    <span>u/{creatorData.username}</span>
-                                </div>
+                                    <Link to={`/u/${creatorData.username}`}>{creatorData.username}</Link>                                </div>
                             ) : (
-                                <span>{creatorData.username}</span>
+                                <Link to={`/u/${creatorData.username}`}>{creatorData.username}</Link>
                             )}
                             <span className="w-1 h-1 bg-loading rounded-full" />
                             <span className="text-muted font-normal">{moment(createdAt.toDate()).fromNow()}</span>

@@ -4,12 +4,13 @@ import { collection, doc, getDoc, getDocs, query, where } from "firebase/firesto
 import { useEffect, useState } from "react";
 import { ReplyButton, ReplyForm } from "./CreateReply";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
 export const Reply = ({ reply, postID, postAuthor, createdAt }) => {
     const [creatorData, setCreatorData] = useState(null);
     const [replies, setReplies] = useState([]);
     const [show, setShow] = useState(false);
-    
+
     const fetchReplyData = async () => {
         try {
             const userDoc = await getDoc(doc(db, "users", reply.createdBy));
@@ -46,14 +47,14 @@ export const Reply = ({ reply, postID, postAuthor, createdAt }) => {
                             <img src={creatorData.avatar} className="avatar-sm" />
                             {reply.createdBy === postAuthor ? (
                                 <div className="space-x-1">
+                                    <Link to={`/u/${creatorData.username}`}>{creatorData.username}</Link>
                                     <span className="font-bold">OP</span>
-                                    <span>u/{creatorData.username}</span>
                                 </div>
                             ) : (
-                                <span>{creatorData.username}</span>
+                                <Link to={`/u/${creatorData.username}`}>{creatorData.username}</Link>
                             )}
                             <span className="w-1 h-1 bg-loading rounded-full" />
-                            <span className="text-muted font-normal">{moment(createdAt.toDate()).fromNow()}</span>
+                            <span className="text-muted font-normal">{moment(createdAt?.toDate()).fromNow()}</span>
                         </div>
                     </div>
                     <div className="flex border-l-1.5 border-border flex-col gap-4 ml-3 pl-[18px]">

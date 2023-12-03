@@ -77,7 +77,7 @@ export const UpvotedTab = ({ profile }) => {
                                             {post.title}
                                         </div>
                                         <div className="flex flex-wrap items-center gap-2 text-sm">
-                                            <div className="font-bold hover:underline">r/{post.community?.name}</div>
+                                            <div className="font-bold hover:underline">r/{post.community?.url}</div>
                                             <p>posted by u/{profile.username}</p>
                                             <span className="w-1 h-1 bg-faint block rounded-full" />
                                             <p>{moment(post.createdAt.toDate()).fromNow()}</p>

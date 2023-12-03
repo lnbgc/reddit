@@ -6,7 +6,7 @@ import { Button } from "@components/ui/Button";
 import { useAuth } from "@contexts/AuthContext";
 import { CREATEPOST } from "@routes/routes";
 import { db } from "@utils/firebase";
-import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, orderBy, query, where } from "firebase/firestore";
 import { Cake, Cog, Image, Loader2 } from "lucide-react";
 import moment from "moment/moment";
 import { useEffect, useState } from "react";
@@ -55,7 +55,8 @@ export const Community = () => {
                     const q = query(collection(db, "posts"), where("community", "==", communityData.id));
                     const querySnapshot = await getDocs(q);
                     const postsData = querySnapshot.docs.map(doc => doc.data());
-                    setPosts(postsData);
+                    const sortedPosts = postsData.sort((a, b) => b.createdAt - a.createdAt);
+                    setPosts(sortedPosts);
                 }
             } catch (error) {
                 console.error("Could not fetch posts:", error);
