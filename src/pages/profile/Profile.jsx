@@ -10,8 +10,8 @@ import { FollowersTab } from "./tabs/FollowersTab";
 import { useAuth } from "@contexts/AuthContext";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { SavedTab } from "./tabs/SavedTab";
-import { UpvotedTab } from "./tabs/UpvotedTab";
 import { DownvotedTab } from "./tabs/DownvotedTab";
+import { UpvotedTab } from "./tabs/UpvotedTab";
 
 export const Profile = () => {
 
@@ -19,12 +19,12 @@ export const Profile = () => {
     const { userData } = useAuth();
 
     const [profile, setProfile] = useState(null);
-    
+
     const [avatar, setAvatar] = useState(null);
     const [avatarPreview, setAvatarPreview] = useState(null);
-    
+
     const [moderating, setModerating] = useState([]);
-    
+
     const [activeTab, setActiveTab] = useState("Posts");
 
     const fetchUser = async () => {
@@ -75,9 +75,9 @@ export const Profile = () => {
             case "Saved":
                 return <SavedTab profile={profile} />;
             case "Downvoted":
-                return <DownvotedTab profile={profile}/>;
+                return <DownvotedTab profile={profile} />;
             case "Followers":
-                return <FollowersTab profileID={profile.uid} />;
+                return <FollowersTab profile={profile} />;
             default:
                 return null;
         }
@@ -129,7 +129,7 @@ export const Profile = () => {
 
     const followersCount = profile.followers.length;
 
-    const userIsProfile = userData.uid === profile.uid;
+    const userIsProfile = userData?.uid === profile.uid;
 
     return (
         <div className="min-headerless pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12">
@@ -192,8 +192,12 @@ export const Profile = () => {
                                 <div className="flex items-center gap-2">
                                     <UserCircle2 className="icon-sm" />
                                     <p>{followersCount}</p>
-                                    {profile.followers.length > 0 && (
-                                        <ChevronRight className="icon-sm cursor-pointer" onClick={() => setActiveTab("Followers")} />
+                                    {userIsProfile && (
+                                        <>
+                                            {profile.followers.length > 0 && (
+                                                <ChevronRight className="icon-sm cursor-pointer" onClick={() => setActiveTab("Followers")} />
+                                            )}
+                                        </>
                                     )}
                                 </div>
                             </div>
@@ -210,7 +214,7 @@ export const Profile = () => {
 
                     {moderating.length > 0 && (
                         <div className="border border-border rounded-md font-medium text-sm shadow-sm flex flex-col gap-4 p-6">
-                            <span className="uppercase text-faint text-xs">{userData ? "You are" : `u/${profile.username} is`} moderating these communities</span>
+                            <span className="uppercase text-faint text-xs">{userIsProfile ? "You are" : `u/${profile.username} is`} moderating these communities</span>
                             <ul className="space-y-1">
                                 {moderating.map(community => (
                                     <li key={community.id}>
