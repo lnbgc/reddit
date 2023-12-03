@@ -19,6 +19,7 @@ import { Modal, ModalBody, ModalHeader } from "@components/ui/Modal";
 import { Textarea } from "@components/ui/Textarea";
 import { Input } from "@components/ui/Input";
 import { Dropdown } from "@components/ui/Dropdown";
+import { Helmet } from "react-helmet-async";
 
 export const Profile = () => {
 
@@ -191,6 +192,9 @@ export const Profile = () => {
 
     return (
         <>
+        <Helmet>
+            <title>{profile.username} (u/{profile.username}) - Reddit</title>
+        </Helmet>
             <div className="min-headerless pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12">
                 <div className="grid grid-cols-12 gap-3 min-[1152px]:gap-6">
                     <div className="col-span-full md:col-span-8">

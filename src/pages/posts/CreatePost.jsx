@@ -9,6 +9,7 @@ import { addDoc, arrayUnion, collection, doc, serverTimestamp, updateDoc } from 
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { CheckCircle, FileText, Image, Loader2, Tags, X } from "lucide-react";
 import { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export const CreatePost = () => {
@@ -112,6 +113,9 @@ export const CreatePost = () => {
 
   return (
     <>
+    <Helmet>
+      <title>Submit post - Reddit</title>
+    </Helmet>
       {loading ? (
         <div className="flex items-center justify-center headerless w-full">
           <Loader2 className="animate-spin h-10 w-10" />

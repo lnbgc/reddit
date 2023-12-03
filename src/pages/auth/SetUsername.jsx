@@ -3,6 +3,7 @@ import { Input } from "@components/ui/Input";
 import { useAuth } from "@contexts/AuthContext"
 import { ROOT } from "@routes/routes";
 import { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 
 export const SetUsername = () => {
@@ -52,24 +53,29 @@ export const SetUsername = () => {
         }
     }
     return (
-        <div className="flex items-center justify-center headerless">
-            <div className="flex flex-col w-full max-w-sm gap-6">
-                <h1 className="text-2xl font-bold">Seems you’re new here!</h1>
-                <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-                    {success && (
-                        <span className="success">{success}</span>
-                    )}
-                    <Input
-                        type="text"
-                        error={error}
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        placeholder="Enter your username"
-                        description="Choose an username to complete registration."
-                    />
-                    <Button type="primary">Submit</Button>
-                </form>
+        <>
+        <Helmet>
+            <title>Complete registration - Reddit</title>
+        </Helmet>
+            <div className="flex items-center justify-center headerless">
+                <div className="flex flex-col w-full max-w-sm gap-6">
+                    <h1 className="text-2xl font-bold">Seems you’re new here!</h1>
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                        {success && (
+                            <span className="success">{success}</span>
+                        )}
+                        <Input
+                            type="text"
+                            error={error}
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            placeholder="Enter your username"
+                            description="Choose an username to complete registration."
+                        />
+                        <Button type="primary">Submit</Button>
+                    </form>
+                </div>
             </div>
-        </div>
+        </>
     )
 }

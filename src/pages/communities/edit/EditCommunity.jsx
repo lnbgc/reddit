@@ -9,6 +9,7 @@ import { FlairsTab } from "./FlairsTab";
 import { RulesTab } from "./RulesTab";
 import { UsersTab } from "./UsersTab";
 import { useAuth } from "@contexts/AuthContext";
+import { Helmet } from "react-helmet-async";
 
 export const EditCommunity = () => {
   const { communityURL } = useParams();
@@ -66,51 +67,56 @@ export const EditCommunity = () => {
   }
 
   return (
-    <div className="min-headerless px-2 min-[1152px]:px-0">
-      <div className="border-b border-border flex justify-between items-center pt-2 min-[1152px]:pt-6 pb-3">
-        <div>
-          <h1 className="text-xl font-bold">Mod Tools</h1>
-          <p className="font-medium text-muted text-sm">Manage community settings.</p>
+    <>
+      <Helmet>
+        <title>Mod Tools (r/{communityData.url}) - Reddit</title>
+      </Helmet>
+      <div className="min-headerless px-2 min-[1152px]:px-0">
+        <div className="border-b border-border flex justify-between items-center pt-2 min-[1152px]:pt-6 pb-3">
+          <div>
+            <h1 className="text-xl font-bold">Mod Tools</h1>
+            <p className="font-medium text-muted text-sm">Manage community settings.</p>
+          </div>
+          <Link to={`/r/${communityURL}`}>
+            <Button>
+              <LogOut className="icon-sm" />
+              <span className="hidden md:block">
+                Exit Mod Tools
+              </span>
+            </Button>
+          </Link>
         </div>
-        <Link to={`/r/${communityURL}`}>
-          <Button>
-            <LogOut className="icon-sm" />
-            <span className="hidden md:block">
-              Exit Mod Tools
-            </span>
-          </Button>
-        </Link>
-      </div>
 
-      <div className="pt-2 pb-6 min-[1152px]:pt-4 min-[1152px]:pb-12 flex md:grid grid-cols-12 gap-4">
-        <div className="md:col-span-3">
-          <ul className="flex flex-col gap-2">
-            <li className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-2 px-3 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "General" ? "bg-secondary hover:no-underline" : ""
-              }`} onClick={() => setActiveTab("General")}>
-              <Cog className="icon-sm" />
-              <span className="hidden md:block">General Settings</span>
-            </li>
-            <li className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-2 px-3 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "Users" ? "bg-secondary hover:no-underline" : ""
-              }`} onClick={() => setActiveTab("Users")}>
-              <UserCircle2 className="icon-sm" />
-              <span className="hidden md:block">Users Management</span>
-            </li>
-            <li className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-2 px-3 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "Flairs" ? "bg-secondary hover:no-underline" : ""
-              }`} onClick={() => setActiveTab("Flairs")}>
-              <TagsIcon className="icon-sm" />
-              <span className="hidden md:block">Post Flairs</span>
-            </li>
-            <li className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-2 px-3 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "Rules" ? "bg-secondary hover:no-underline" : ""
-              }`} onClick={() => setActiveTab("Rules")}>
-              <FileText className="icon-sm" />
-              <span className="hidden md:block">Community Rules</span>
-            </li>
-          </ul>
-        </div>
-        <div className="md:col-span-9 w-full">
-          {tabContent()}
+        <div className="pt-2 pb-6 min-[1152px]:pt-4 min-[1152px]:pb-12 flex md:grid grid-cols-12 gap-4">
+          <div className="md:col-span-3">
+            <ul className="flex flex-col gap-2">
+              <li className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-2 px-3 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "General" ? "bg-secondary hover:no-underline" : ""
+                }`} onClick={() => setActiveTab("General")}>
+                <Cog className="icon-sm" />
+                <span className="hidden md:block">General Settings</span>
+              </li>
+              <li className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-2 px-3 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "Users" ? "bg-secondary hover:no-underline" : ""
+                }`} onClick={() => setActiveTab("Users")}>
+                <UserCircle2 className="icon-sm" />
+                <span className="hidden md:block">Users Management</span>
+              </li>
+              <li className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-2 px-3 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "Flairs" ? "bg-secondary hover:no-underline" : ""
+                }`} onClick={() => setActiveTab("Flairs")}>
+                <TagsIcon className="icon-sm" />
+                <span className="hidden md:block">Post Flairs</span>
+              </li>
+              <li className={`cursor-pointer hover:underline underline-offset-2 rounded-md py-2 px-3 text-sm font-medium flex items-center gap-2 hover-bg-secondary ${activeTab === "Rules" ? "bg-secondary hover:no-underline" : ""
+                }`} onClick={() => setActiveTab("Rules")}>
+                <FileText className="icon-sm" />
+                <span className="hidden md:block">Community Rules</span>
+              </li>
+            </ul>
+          </div>
+          <div className="md:col-span-9 w-full">
+            {tabContent()}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

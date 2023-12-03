@@ -5,6 +5,7 @@ import { db } from "@utils/firebase";
 import { addDoc, arrayUnion, collection, doc, getDocs, serverTimestamp, updateDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import defaultAvatar from "@assets/community-default.svg"
+import { Helmet } from "react-helmet-async";
 
 export const CreateCommunity = () => {
 
@@ -87,39 +88,44 @@ export const CreateCommunity = () => {
     }
 
     return (
-        <div className="headerless flex flex-col justify-center items-center">
-            <div className="max-w-md">
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    <h1 className="font-bold text-xl">Create your community</h1>
-                    <div className="flex flex-col gap-1">
-                        <h2 className="font-semibold">Name</h2>
-                        <p className="text-sm text-muted">
-                            Community names are case sensitive and cannot be changed.
-                        </p>
-                        {error && <span className="error mt-3">{error}</span>}
-                        {success && <span className="success mt-3">{success}</span>}
-                    </div>
+        <>
+        <Helmet>
+            <title>Create a community - Reddit</title>
+        </Helmet>
+            <div className="headerless flex flex-col justify-center items-center">
+                <div className="max-w-md">
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                        <h1 className="font-bold text-xl">Create your community</h1>
+                        <div className="flex flex-col gap-1">
+                            <h2 className="font-semibold">Name</h2>
+                            <p className="text-sm text-muted">
+                                Community names are case sensitive and cannot be changed.
+                            </p>
+                            {error && <span className="error mt-3">{error}</span>}
+                            {success && <span className="success mt-3">{success}</span>}
+                        </div>
 
-                    <div className="border border-border rounded-md shadow-sm px-3 py-2 max-w-[26.5rem]">
-                        <span className="text-faint font-medium select-none mr-0.5">r/</span>
-                        <input
-                            type="text"
-                            className="outline-none bg-transparent w-11/12"
-                            value={url}
-                            onChange={(e) => setUrl(e.target.value)}
-                        />
+                        <div className="border border-border rounded-md shadow-sm px-3 py-2 max-w-[26.5rem]">
+                            <span className="text-faint font-medium select-none mr-0.5">r/</span>
+                            <input
+                                type="text"
+                                className="outline-none bg-transparent w-11/12"
+                                value={url}
+                                onChange={(e) => setUrl(e.target.value)}
+                            />
+                        </div>
+                        <p className="text-sm text-muted">
+                            Community names cannot have spaces (e.g., "r/bookclub" not "r/book club"), must be
+                            between 3-21 characters, and underscores ("_") are the only special
+                            characters allowed.
+                        </p>
+                    </form>
+                    <div className="flex items-center gap-2 mt-4">
+                        <Button type="secondary" onClick={() => navigate(-1)}>Cancel</Button>
+                        <Button type="primary" onClick={handleSubmit}>Create Community</Button>
                     </div>
-                    <p className="text-sm text-muted">
-                        Community names cannot have spaces (e.g., "r/bookclub" not "r/book club"), must be
-                        between 3-21 characters, and underscores ("_") are the only special
-                        characters allowed.
-                    </p>
-                </form>
-                <div className="flex items-center gap-2 mt-4">
-                    <Button type="secondary" onClick={() => navigate(-1)}>Cancel</Button>
-                    <Button type="primary" onClick={handleSubmit}>Create Community</Button>
                 </div>
             </div>
-        </div>
+        </>
     )
 }

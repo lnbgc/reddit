@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { ROOT } from "@routes/routes";
 import { Modal, ModalBody, ModalHeader } from "@components/ui/Modal";
 import { Trash } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 
 export const Settings = () => {
     const { user, updatePasscode, deleteAccount } = useAuth();
@@ -57,6 +58,9 @@ export const Settings = () => {
 
     return (
         <>
+        <Helmet>
+            <title>User Settings - Reddit</title>
+        </Helmet>
             <div className="min-headerless pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12 flex flex-col gap-12">
                 <h1 className="font-bold text-xl">Account settings</h1>
                 <div className="space-y-4">

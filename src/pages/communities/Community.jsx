@@ -10,6 +10,7 @@ import { collection, doc, getDoc, getDocs, orderBy, query, where } from "firebas
 import { Cake, Cog, Image, Loader2 } from "lucide-react";
 import moment from "moment/moment";
 import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { Link, useParams } from "react-router-dom"
 
 export const Community = () => {
@@ -104,118 +105,123 @@ export const Community = () => {
     const isFollowing = userData?.following_communities.includes(communityData.id);
 
     return (
-        <div className="min-headerless">
-            <div className="pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12 grid grid-cols-12 gap-3 min-[1152px]:gap-6">
-                <div className="col-span-full md:col-span-8">
-                    <div className="flex justify-between">
-                        <div className="flex items-center gap-3">
-                            <img src={communityData.avatar} className="avatar-lg" />
-                            <div className="flex items-center justify-between w-full">
-                                <div>
-                                    <h1 className="font-bold text-lg">{communityData.name}</h1>
-                                    <p className="text-sm font-medium text-muted">r/{communityData.url}</p>
+        <>
+            <Helmet>
+                <title>{communityData.name} (r/{communityData.url}) - Reddit</title>
+            </Helmet>
+            <div className="min-headerless">
+                <div className="pt-2 pb-6 px-2 min-[1152px]:px-0 min-[1152px]:pt-6 min-[1152px]:pb-12 grid grid-cols-12 gap-3 min-[1152px]:gap-6">
+                    <div className="col-span-full md:col-span-8">
+                        <div className="flex justify-between">
+                            <div className="flex items-center gap-3">
+                                <img src={communityData.avatar} className="avatar-lg" />
+                                <div className="flex items-center justify-between w-full">
+                                    <div>
+                                        <h1 className="font-bold text-lg">{communityData.name}</h1>
+                                        <p className="text-sm font-medium text-muted">r/{communityData.url}</p>
+                                    </div>
                                 </div>
                             </div>
+                            {isModerator && (
+                                <Link to={`/r/${communityData.url}/edit`}>
+                                    <Button>
+                                        <Cog className="icon-sm" />
+                                        Mod Tools
+                                    </Button>
+                                </Link>
+                            )}
                         </div>
-                        {isModerator && (
-                            <Link to={`/r/${communityData.url}/edit`}>
+                        {isFollowing ? (
+                            <Link to={CREATEPOST} state={{ communityData }} className="mt-4 flex items-center gap-2 w-full border border-border rounded-md shadow-sm p-2">
+                                <img src={userData.avatar} className="avatar-md" alt="" />
+                                <input type="text" placeholder="Create post" className="text-sm font-medium outline-none bg-transparent placeholder:text-faint rounded-md w-full border border-border py-2 px-3" />
                                 <Button>
-                                    <Cog className="icon-sm" />
-                                    Mod Tools
+                                    <Image className="icon-sm text-muted" />
                                 </Button>
                             </Link>
-                        )}
-                    </div>
-                    {isFollowing ? (
-                        <Link to={CREATEPOST} state={{ communityData }} className="mt-4 flex items-center gap-2 w-full border border-border rounded-md shadow-sm p-2">
-                            <img src={userData.avatar} className="avatar-md" alt="" />
-                            <input type="text" placeholder="Create post" className="text-sm font-medium outline-none bg-transparent placeholder:text-faint rounded-md w-full border border-border py-2 px-3" />
-                            <Button>
-                                <Image className="icon-sm text-muted" />
-                            </Button>
-                        </Link>
-                    ) : (
-                        <div className="mt-4 text-sm font-medium border border-border rounded-md shadow-sm p-4">
-                            Join r/{communityData.url} to start posting.
-                        </div>
-                    )}
-
-                    {posts.length > 0 ? (
-                        <div className="divide-y divide-border">
-                            {posts.map(post => (
-                                <Post type="preview" key={post.id} post={post} />
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="pt-6 flex justify-center">
-                            <span className="text-sm font-medium text-muted">No posts yet.</span>
-                        </div>
-                    )}
-
-                </div>
-                <div className="col-span-4 hidden text-sm md:flex flex-col gap-3">
-                    <div className="border border-border rounded-md shadow-sm p-6 flex flex-col gap-3">
-                        <span className="text-xs text-faint uppercase font-medium">About community</span>
-                        {communityData.description && (
-                            <p>{communityData.description}</p>
+                        ) : (
+                            <div className="mt-4 text-sm font-medium border border-border rounded-md shadow-sm p-4">
+                                Join r/{communityData.url} to start posting.
+                            </div>
                         )}
 
-                        <div className="border-y border-border py-4 flex items-center font-medium gap-2">
-                            <Cake className="icon-sm" />
-                            <p>Created {moment(communityData.createdAt.toDate()).format('MMM D, YYYY')}.</p>
-                        </div>
-                        <div className="flex justify-between items-center font-medium">
-                            <span className="">
-                                Followers:
-                            </span>
-                            <p className="py-2 px-3 border-border border rounded-md shadow-sm">
-                                {followersCount
-                                    ? (followersCount === 1
-                                        ? `${followersCount} follower`
-                                        : `${followersCount} followers`)
-                                    : "0 followers"}
-                            </p>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Join communityID={communityData.id} />
-                            <Favorite communityID={communityData.id} />
-                        </div>
-                    </div>
-
-                    {communityData.flairs && communityData.flairs.length > 0 && (
-                        <div className="border border-border rounded-md shadow-sm p-6 flex flex-col gap-3">
-                            <span className="text-xs text-faint uppercase font-medium">Flairs</span>
-                            <div className="flex flex-wrap gap-1">
-                                {communityData.flairs.map((flair) => (
-                                    <span key={flair.id} className="flair">{flair}</span>
+                        {posts.length > 0 ? (
+                            <div className="divide-y divide-border">
+                                {posts.map(post => (
+                                    <Post type="preview" key={post.id} post={post} />
                                 ))}
                             </div>
-                        </div>
-                    )}
+                        ) : (
+                            <div className="pt-6 flex justify-center">
+                                <span className="text-sm font-medium text-muted">No posts yet.</span>
+                            </div>
+                        )}
 
-                    {communityData.rules && communityData.rules.length > 0 && (
+                    </div>
+                    <div className="col-span-4 hidden text-sm md:flex flex-col gap-3">
                         <div className="border border-border rounded-md shadow-sm p-6 flex flex-col gap-3">
-                            <span className="text-xs text-faint uppercase font-medium">r/{communityData.url} rules</span>
-                            <div className="flex flex-wrap gap-1">
-                                <Accordion counter={true} items={communityData.rules} />
+                            <span className="text-xs text-faint uppercase font-medium">About community</span>
+                            {communityData.description && (
+                                <p>{communityData.description}</p>
+                            )}
+
+                            <div className="border-y border-border py-4 flex items-center font-medium gap-2">
+                                <Cake className="icon-sm" />
+                                <p>Created {moment(communityData.createdAt.toDate()).format('MMM D, YYYY')}.</p>
+                            </div>
+                            <div className="flex justify-between items-center font-medium">
+                                <span className="">
+                                    Followers:
+                                </span>
+                                <p className="py-2 px-3 border-border border rounded-md shadow-sm">
+                                    {followersCount
+                                        ? (followersCount === 1
+                                            ? `${followersCount} follower`
+                                            : `${followersCount} followers`)
+                                        : "0 followers"}
+                                </p>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                <Join communityID={communityData.id} />
+                                <Favorite communityID={communityData.id} />
                             </div>
                         </div>
-                    )}
 
-                    <div className="border border-border rounded-md shadow-sm p-6 flex flex-col gap-3">
-                        <span className="text-xs text-faint uppercase font-medium">Moderators</span>
-                        <ul className="flex flex-col gap-2 font-medium underline underline-offset-2">
-                            {moderators.map((moderator, index) => (
-                                <li key={index}>
-                                    <Link to={`/u/${moderator.username}`}>
-                                        u/{moderator.username}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
+                        {communityData.flairs && communityData.flairs.length > 0 && (
+                            <div className="border border-border rounded-md shadow-sm p-6 flex flex-col gap-3">
+                                <span className="text-xs text-faint uppercase font-medium">Flairs</span>
+                                <div className="flex flex-wrap gap-1">
+                                    {communityData.flairs.map((flair) => (
+                                        <span key={flair.id} className="flair">{flair}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {communityData.rules && communityData.rules.length > 0 && (
+                            <div className="border border-border rounded-md shadow-sm p-6 flex flex-col gap-3">
+                                <span className="text-xs text-faint uppercase font-medium">r/{communityData.url} rules</span>
+                                <div className="flex flex-wrap gap-1">
+                                    <Accordion counter={true} items={communityData.rules} />
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="border border-border rounded-md shadow-sm p-6 flex flex-col gap-3">
+                            <span className="text-xs text-faint uppercase font-medium">Moderators</span>
+                            <ul className="flex flex-col gap-2 font-medium underline underline-offset-2">
+                                {moderators.map((moderator, index) => (
+                                    <li key={index}>
+                                        <Link to={`/u/${moderator.username}`}>
+                                            u/{moderator.username}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            </div >
-        </div>
+                </div >
+            </div>
+        </>
     )
 }
