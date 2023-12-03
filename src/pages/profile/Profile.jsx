@@ -3,7 +3,7 @@ import { collection, doc, getDocs, query, updateDoc, where } from "firebase/fire
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom"
 import { PostsTab } from "./tabs/PostsTab";
-import { Cake, ChevronRight, Loader2, Pen, UserCircle2 } from "lucide-react";
+import { Cake, ChevronRight, Cog, Loader2, Pen, UserCircle2 } from "lucide-react";
 import moment from "moment";
 import { FollowUser } from "./FollowUser";
 import { FollowersTab } from "./tabs/FollowersTab";
@@ -18,6 +18,7 @@ import { Button } from "@components/ui/Button";
 import { Modal, ModalBody, ModalHeader } from "@components/ui/Modal";
 import { Textarea } from "@components/ui/Textarea";
 import { Input } from "@components/ui/Input";
+import { Dropdown } from "@components/ui/Dropdown";
 
 export const Profile = () => {
 
@@ -163,6 +164,7 @@ export const Profile = () => {
             setBio("");
             setError("");
             setShowBioModal(false);
+            window.location.reload();
         } catch (error) {
             setError("Something went wrong. Please try again.")
             console.error(error);
@@ -228,18 +230,28 @@ export const Profile = () => {
                     <div className="hidden md:col-span-4 md:flex flex-col gap-4">
                         <div className="border border-border rounded-md font-medium text-sm shadow-sm flex flex-col gap-4 p-6">
                             <div className="flex flex-col gap-2">
-                                <div className="relative w-fit">
-                                    <img
-                                        src={avatarPreview || profile.avatar}
-                                        className="w-16 h-16 object-cover rounded-md"
-                                    />
-                                    {userIsProfile && (
-                                        <div className="absolute bg-primary rounded-full p-1 -right-3 -bottom-1 border border-border shadow-sm">
-                                            <label className="cursor-pointer">
-                                                <Pen className="w-3 h-3" />
-                                                <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-                                            </label>
-                                        </div>
+                                <div className="flex justify-between">
+                                    <div className="relative w-fit">
+                                        <img
+                                            src={avatarPreview || profile.avatar}
+                                            className="w-16 h-16 object-cover rounded-md"
+                                        />
+                                        {userIsProfile && (
+                                            <div className="absolute bg-primary rounded-full p-1 -right-3 -bottom-1 border border-border shadow-sm">
+                                                <label className="cursor-pointer">
+                                                    <Pen className="w-3 h-3" />
+                                                    <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+                                                </label>
+                                            </div>
+                                        )}
+                                    </div>
+                                    {userIsProfile && (profile.bio !== "" || profile.social_link !== "") && (
+                                        <Dropdown trigger={<Cog className="icon-sm" />} chevron={false} top="top-10">
+                                            <ul className="w-24 text-right flex flex-col">
+                                                <li className="hover:bg-secondary rounded-md py-1 pr-2 cursor-pointer" onClick={() => setShowBioModal(true)}>Edit Bio</li>
+                                                <li className="hover:bg-secondary rounded-md py-1 pr-2 cursor-pointer" onClick={() => setShowSocialModal(true)}>Edit Social</li>
+                                            </ul>
+                                        </Dropdown>
                                     )}
                                 </div>
                                 <span>u/{profile.username}</span>
