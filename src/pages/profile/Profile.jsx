@@ -12,6 +12,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { SavedTab } from "./tabs/SavedTab";
 import { DownvotedTab } from "./tabs/DownvotedTab";
 import { UpvotedTab } from "./tabs/UpvotedTab";
+import { CommentsTab } from "./tabs/CommentsTab";
 
 export const Profile = () => {
 
@@ -78,6 +79,8 @@ export const Profile = () => {
                 return <DownvotedTab profile={profile} />;
             case "Followers":
                 return <FollowersTab profile={profile} />;
+            case "Comments":
+                return <CommentsTab profile={profile} />
             default:
                 return null;
         }
