@@ -9,6 +9,7 @@ import { EditCommunity } from "@pages/communities/edit/EditCommunity";
 import { CreatePost } from "@pages/posts/CreatePost";
 import { FullPost } from "@pages/posts/FullPost";
 import { Profile } from "@pages/profile/Profile";
+import { Settings } from "@pages/auth/Settings";
 
 export const ROOT = "/";
 export const LOGIN = "/login";
@@ -20,6 +21,7 @@ export const EDITCOMMUNITY = "/r/:communityURL/edit";
 export const CREATEPOST = "/submit";
 export const POST = "/r/:communityURL/:postID";
 export const PROFILE = "/u/:username";
+export const SETTINGS = "/settings";
 
 export const Routes = () => {
     return (
@@ -34,6 +36,7 @@ export const Routes = () => {
             <Route path={CREATEPOST} element={<CreatePost />} />
             <Route path={POST} element={<FullPost />} />
             <Route path={PROFILE} element={<Profile />} />
+            <Route path={SETTINGS} element={<Settings />} />
         </RouterRoutes>
     )
 }

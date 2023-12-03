@@ -1,6 +1,6 @@
 import { Dropdown } from "@components/ui/Dropdown"
 import { useAuth } from "@contexts/AuthContext";
-import { CREATECOMMUNITY } from "@routes/routes";
+import { CREATECOMMUNITY, SETTINGS } from "@routes/routes";
 import { Cog, FileText, InfoIcon, LogOut, Plus, UserCircle2 } from "lucide-react"
 import moment from "moment/moment";
 import { Link } from "react-router-dom"
@@ -31,7 +31,7 @@ export const ProfileMenu = ({ userData }) => {
             <UserCircle2 className="icon-sm" />
             Profile
           </Link>
-          <Link className="flex items-center gap-2 py-2 pl-2 rounded-md hover:bg-secondary">
+          <Link to={SETTINGS} className="flex items-center gap-2 py-2 pl-2 rounded-md hover:bg-secondary">
             <Cog className="icon-sm" />
             User Settings
           </Link>

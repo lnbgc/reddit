@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "@utils/firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { collection, doc, getDoc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
+import { deleteUser, onAuthStateChanged, signOut, updateEmail, updatePassword } from "firebase/auth";
+import { collection, deleteDoc, doc, getDoc, getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import defaultAvatar from "@assets/user-default.svg";
 
 const UserContext = createContext();
@@ -42,6 +42,24 @@ export const AuthProvider = ({ children }) => {
             return !usernames.includes(username);
         } catch (error) {
             console.error("Could not check username availability:", error)
+        }
+    }
+
+    const updatePasscode = async (newPassword) => {
+        try {
+            await updatePassword(user, newPassword);
+        } catch (error) {
+            console.error("Could not update password:", error);
+        }
+    }
+
+    const deleteAccount = async () => {
+        try {
+            await deleteUser(user);
+            const userDoc = doc(db, "users", user.uid);
+            await deleteDoc(userDoc);
+        } catch (error) {
+            console.error("Could not delete account:", error);
         }
     }
 
@@ -86,6 +104,8 @@ export const AuthProvider = ({ children }) => {
             userData,
             createUser,
             usernameCheck,
+            updatePasscode,
+            deleteAccount,
             logOut
         }}>
             {children}
