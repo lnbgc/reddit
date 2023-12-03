@@ -1,19 +1,24 @@
-import { db } from "@utils/firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { db, storage } from "@utils/firebase";
+import { collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
 import { PostsTab } from "./tabs/PostsTab";
 import { UpvotedTab } from "./tabs/UpvotedTab";
 import { DownvotedTab } from "./tabs/DownvotedTab";
-import { Bookmark, Cake, ChevronDownCircle, ChevronRight, ChevronUpCircle, FileBadge, Loader2, MessageSquare, UserCircle2 } from "lucide-react";
+import { Bookmark, Cake, ChevronDownCircle, ChevronRight, ChevronUpCircle, FileBadge, Loader2, MessageSquare, Pen, UserCircle2 } from "lucide-react";
 import moment from "moment";
 import { SavedTab } from "./tabs/SavedTab";
 import { FollowUser } from "./FollowUser";
 import { FollowersTab } from "./tabs/FollowersTab";
+import { useAuth } from "@contexts/AuthContext";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { FileInput } from "@components/ui/FileInput";
 
 export const Profile = () => {
 
     const { username } = useParams();
+
+    const { userData } = useAuth();
 
     const [profile, setProfile] = useState(null);
     const [upvoted, setUpvoted] = useState([]);
@@ -22,6 +27,15 @@ export const Profile = () => {
     const [savedPosts, setSavedPosts] = useState([]);
 
     const [activeTab, setActiveTab] = useState("Posts");
+
+    const [avatar, setAvatar] = useState(null);
+    const [avatarPreview, setAvatarPreview] = useState(null);
+
+
+
+
+
+
 
     const fetchUser = async () => {
         try {
@@ -125,6 +139,42 @@ export const Profile = () => {
         }
     };
 
+    useEffect(() => {
+        if (avatar) {
+            updateAvatar();
+        }
+    }, [avatar]);
+
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        setAvatar(file);
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const previewURL = e.target.result;
+                setAvatarPreview(previewURL);
+            };
+
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const updateAvatar = async () => {
+        try {
+            const userDoc = doc(db, "users", userData.uid);
+            if (avatar) {
+                const avatarRef = ref(storage, `users_avatars/${userData.uid}`);
+                await uploadBytes(avatarRef, avatar);
+                const avatarURL = await getDownloadURL(avatarRef);
+                await updateDoc(userDoc, { avatar: avatarURL });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     if (!profile) {
         return (
             <div className="flex items-center headerless justify-center w-full">
@@ -135,6 +185,7 @@ export const Profile = () => {
 
     const followersCount = profile.followers.length;
 
+    const userIsProfile = userData.uid === profile.uid;
 
     return (
         <div className="min-headerless ">
@@ -175,7 +226,20 @@ export const Profile = () => {
                 <div className="hidden md:col-span-4 pt-2 md:block">
                     <div className="border border-border rounded-md font-medium text-sm shadow-sm flex flex-col gap-4 p-6">
                         <div className="flex flex-col">
-                            <img src={profile.avatar} alt="" className="avatar-lg" />
+                            <div className="relative w-fit">
+                                <img
+                                    src={avatarPreview || profile.avatar}
+                                    className="w-16 h-16 object-cover rounded-full"
+                                />
+                                {userIsProfile && (
+                                    <div className="absolute bg-primary rounded-md p-1 -right-1 -bottom-0 border border-border shadow-sm">
+                                        <label className="cursor-pointer">
+                                            <Pen className="w-3 h-3" />
+                                            <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+                                        </label>
+                                    </div>
+                                )}
+                            </div>
                             <span>u/{profile.username}</span>
                         </div>
                         <div className="flex justify-between">
@@ -184,7 +248,7 @@ export const Profile = () => {
                                 <div className="flex items-center gap-2">
                                     <UserCircle2 className="icon-sm" />
                                     <p>{followersCount}</p>
-                                    {profile.followers.length && (
+                                    {profile.followers.length > 0 && (
                                         <ChevronRight className="icon-sm cursor-pointer" onClick={() => setActiveTab("Followers")} />
                                     )}
                                 </div>
