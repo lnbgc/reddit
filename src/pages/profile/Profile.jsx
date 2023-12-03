@@ -7,12 +7,11 @@ import { UpvotedTab } from "./tabs/UpvotedTab";
 import { DownvotedTab } from "./tabs/DownvotedTab";
 import { Bookmark, Cake, ChevronDownCircle, ChevronRight, ChevronUpCircle, FileBadge, Loader2, MessageSquare, Pen, UserCircle2 } from "lucide-react";
 import moment from "moment";
-import { SavedTab } from "./tabs/SavedTab";
 import { FollowUser } from "./FollowUser";
 import { FollowersTab } from "./tabs/FollowersTab";
 import { useAuth } from "@contexts/AuthContext";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { SavedTest } from "./tabs/SavedTest";
+import { SavedTab } from "./tabs/SavedTab";
 
 export const Profile = () => {
 
@@ -112,7 +111,7 @@ export const Profile = () => {
             case "Upvoted":
                 return <UpvotedTab upvoted={upvoted} username={profile.username} />;
             case "Saved":
-                return <SavedTest profile={profile} />;
+                return <SavedTab profile={profile} />;
             case "Downvoted":
                 return <DownvotedTab downvoted={downvoted} username={profile.username} />;
             case "Followers":
