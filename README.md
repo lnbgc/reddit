@@ -1,4 +1,4 @@
-[English](#english) | [Francais](#french) 
+[English](#english) | [Français](#french) 
 
 # Reddit Clone<a id="english"></a>
 
